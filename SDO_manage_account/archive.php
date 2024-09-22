@@ -135,136 +135,26 @@ $tables = ['archive'];
 
 // Loop through each table
 foreach ($tables as $table) {
-    // Prepare the SQL query without the year condition
-    $sql = "SELECT fullname, employment_number, email, date FROM $table";
+    // Prepare the SQL query to select the position from the table
+    $sql = "SELECT fullname, employment_number, email, position, date FROM $table";
     
-    // Prepare and bind the statement
+    // Prepare and execute the statement
     $stmt = $conn->prepare($sql);
     $stmt->execute();
     $result = $stmt->get_result();
 
     if ($result->num_rows > 0) {
-        // Fetch data and add it to $data array
+        // Fetch data and add it to the $data array
         while ($row = $result->fetch_assoc()) {
-            // Replace underscore with space in table name and capitalize each word
-            $position = ucwords(str_replace('_', ' ', $table)); 
-            // Convert "sdo" to "SDO" if found
-            $position = str_replace('Sdo', 'SDO', $position); 
-            $row['position'] = $position; // Adding position based on modified table name
+            // Use the position as it is fetched from the database
             $data[] = $row;
         }
     }
 }
+
+// Now you can use the $data array for further processing, like rendering it on a page or storing it.
 ?>
 
-
-<?php
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    // Check if the "activate" button was clicked
-    if (isset($_POST["activate"])) {
-        // Get the employment number from the form submission
-        $employment_number = $_POST["employment_number"];
-
-        // Prepare and execute SELECT queries to check if employment_number exists in each table
-        $tables = ['sdo_admin', 'executive_committee', 'school_admin'];
-        $found = false;
-
-        foreach ($tables as $table) {
-            $sql = "SELECT * FROM $table WHERE employment_number = ?";
-            $stmt = $conn->prepare($sql);
-            $stmt->bind_param("s", $employment_number);
-            $stmt->execute();
-            $result = $stmt->get_result();
-
-            if ($result->num_rows > 0) {
-                // If employment_number found in table, update activation column
-                $found = true;
-                $sql_update = "UPDATE $table SET activation = 'activate' WHERE employment_number = ?";
-                $stmt_update = $conn->prepare($sql_update);
-                $stmt_update->bind_param("s", $employment_number);
-                $stmt_update->execute();
-            }
-        }
-    } elseif (isset($_POST["deactivate"])) { // Check if the "deactivate" button was clicked
-        // Get the employment number from the form submission
-        $employment_number = $_POST["employment_number"];
-
-        // Prepare and execute UPDATE queries to deactivate the user only in the table where employment_number is found
-        $tables = ['sdo_admin', 'executive_committee', 'school_admin'];
-
-        foreach ($tables as $table) {
-            $sql_check = "SELECT * FROM $table WHERE employment_number = ?";
-            $stmt_check = $conn->prepare($sql_check);
-            $stmt_check->bind_param("s", $employment_number);
-            $stmt_check->execute();
-            $result_check = $stmt_check->get_result();
-
-            if ($result_check->num_rows > 0) {
-                $sql_update = "UPDATE $table SET activation = 'deactivate' WHERE employment_number = ?";
-                $stmt_update = $conn->prepare($sql_update);
-                $stmt_update->bind_param("s", $employment_number);
-                $stmt_update->execute();
-                // Since we found the employment number in one table, we can break out of the loop
-                break;
-            }
-        }
-    } elseif (isset($_POST["archive"])) { // Check if the "archive" button was clicked
-        // Get the employment number from the form submission
-        $employment_number = $_POST["employment_number"];
-    
-        // Prepare and execute SELECT queries to check if employment_number exists in each table
-        $tables = ['sdo_admin', 'executive_committee', 'school_admin'];
-    
-        foreach ($tables as $table) {
-            $sql_check = "SELECT * FROM $table WHERE employment_number = ?";
-            $stmt_check = $conn->prepare($sql_check);
-            $stmt_check->bind_param("s", $employment_number);
-            $stmt_check->execute();
-            $result_check = $stmt_check->get_result();
-    
-            if ($result_check->num_rows > 0) {
-                // Fetch the row data before deleting
-                $row_data = $result_check->fetch_assoc();
-    
-                // Assign the position based on the table where the data was found
-                switch ($table) {
-                    case 'sdo_admin':
-                        $position = 'SDO Admin';
-                        break;
-                    case 'executive_committee':
-                        $position = 'Executive Committee';
-                        break;
-                    case 'school_admin':
-                        $position = 'School Admin';
-                        break;
-                    default:
-                        $position = 'Unknown';
-                }
-    
-                // Insert the data into the archive table
-                $sql_insert_archive = "INSERT INTO archive (fullname, employment_number, email, date, position, activation) VALUES (?, ?, ?, ?, ?, ?)";
-                $stmt_archive = $conn->prepare($sql_insert_archive);
-                $stmt_archive->bind_param("ssssss", $row_data['fullname'], $row_data['employment_number'], $row_data['email'], $row_data['date'], $position, $row_data['activation']);
-                $stmt_archive->execute();
-    
-                // Delete the row from the original table
-                $sql_delete = "DELETE FROM $table WHERE employment_number = ?";
-                $stmt_delete = $conn->prepare($sql_delete);
-                $stmt_delete->bind_param("s", $employment_number);
-                $stmt_delete->execute();
-    
-                // Break out of the loop once the record is found and archived
-                break; // Ensure we stop after archiving the first found record
-            }
-        }
-    
-        // Refresh the page after completing the archive process
-        header("Location: " . $_SERVER['PHP_SELF']);
-        exit();
-    }
-    
-}    
-?>
 
 <?php
     include('../database.php');

@@ -22,9 +22,11 @@
 
         // Set verified to "no"
         $verified = "no";
+        $position = "SDO ADMIN";
 
         // Insert data into the database
-        $query = "INSERT INTO sdo_admin (fullname, employment_number, date, password, verified, activation, year) VALUES ('$fullname', '$employment_number', '$date', '$hashed_password', '$verified', '$activation','$year')";
+
+        $query = "INSERT INTO sdo_admin (fullname, employment_number, date, password, verified, activation, year, position) VALUES ('$fullname', '$employment_number', '$date', '$hashed_password', '$verified', '$activation','$year','$position')";
         
         $result = mysqli_query($conn, $query);
     }
@@ -53,9 +55,10 @@
 
         // Set verified to "no"
         $verified = "no";
+        $position = "Executive Committee";
 
         // Insert data into the database
-        $query = "INSERT INTO executive_committee (fullname, employment_number, date, password, verified, activation, year) VALUES ('$fullname', '$employment_number', '$date', '$hashed_password', '$verified', '$activation', '$year')";
+        $query = "INSERT INTO executive_committee (fullname, employment_number, date, password, verified, activation, year, position) VALUES ('$fullname', '$employment_number', '$date', '$hashed_password', '$verified', '$activation', '$year','$position')";
         
         $result = mysqli_query($conn, $query);
     }
@@ -87,9 +90,10 @@
 
         // Set verified to "no"
         $verified = "no";
+        $position = "School Admin";
 
         // Insert data into the database
-        $query = "INSERT INTO school_admin (fullname, employment_number, date, password, school, verified, activation, year) VALUES ('$fullname', '$employment_number', '$date', '$hashed_password','$school', '$verified', '$activation', '$year')";
+        $query = "INSERT INTO school_admin (fullname, employment_number, date, password, school, verified, activation, year, position) VALUES ('$fullname', '$employment_number', '$date', '$hashed_password','$school', '$verified', '$activation', '$year','$position')";
         
         $result = mysqli_query($conn, $query);
     }
@@ -244,9 +248,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 }
     
                 // Insert the data into the archive table
-                $sql_insert_archive = "INSERT INTO archive (fullname, employment_number, email, date, position, activation) VALUES (?, ?, ?, ?, ?, ?)";
+                $sql_insert_archive = "INSERT INTO archive (fullname, employment_number, email, date, activation, position) VALUES (?, ?, ?, ?, ?,?)";
                 $stmt_archive = $conn->prepare($sql_insert_archive);
-                $stmt_archive->bind_param("ssssss", $row_data['fullname'], $row_data['employment_number'], $row_data['email'], $row_data['date'], $position, $row_data['activation']);
+                $stmt_archive->bind_param("ssssss", $row_data['fullname'], $row_data['employment_number'], $row_data['email'], $row_data['date'], $row_data['activation'], $row_data['position']);
                 $stmt_archive->execute();
     
                 // Delete the row from the original table
