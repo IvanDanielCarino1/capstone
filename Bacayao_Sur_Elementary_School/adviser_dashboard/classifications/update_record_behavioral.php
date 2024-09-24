@@ -1278,6 +1278,9 @@ $conn->close();
 <body>
     <form action="" method="post" class="form-container english" id="englishForm">
     <div class="main-containers">
+    <div class="label" style="text-align: center; margin-bottom: 20px; background-color: #040869;">
+    <h1 style="color: white;">Intervention in Behavioral</h1>
+</div>
             <div class="checkbox-container">
                 <div class="checkbox-item">
                     <input type="radio" id="checkbox1" name="identification"  onclick="navigateToPage(this)">
@@ -1333,81 +1336,80 @@ $conn->close();
                         </div>
                     </div>
                     <div class="columns half-widths">
-                        <div class="select-wrapper rights">
-                            <select id="topdown2" name="status" class="containerss second" style="background-color: #F3F3F3;">
-                                <option value="<?php echo $status ?>" disabled selected hidden><?php echo $status ?></option>
-                                <option value="On-Going">On-Going</option>
-                                <option value="Resolved">Resolved</option>
-                                <option value="Unresolved">Unresolved</option>
-                            </select>
-                        </div>
-                    </div>
+    <div class="select-wrapper rights">
+        <select id="topdown2" name="status" class="containerss second" style="background-color: #F3F3F3;">
+            <option value="" disabled selected hidden><?php echo isset($status) && !empty($status) ? $status : 'Select Status'; ?></option>
+            <option value="On-Going">On-Going</option>
+            <option value="Resolved">Resolved</option>
+            <option value="Unresolved">Unresolved</option>
+        </select>
+    </div>
+</div>
                 </div>
-
 
                 <div class="rows">
-                    <div class="columns">
-                        <div class="containerss" style="background-color: #190572;">
-                            <h3 style="margin-left:10px">Pupil's Name</h3>
-                        </div>
-                    </div>
-                    <div class="columns column-rights">
-                        <div class="containerss" style="background-color: #F3F3F3;">
-                        <input type="text" name="fullname" id="fullname" value="<?php echo $fullname ?>"  readonly>
-                        </div>
-                    </div>
-                    <div class="columns column-lefts">
-                        <div class="containerss" style="background-color: #190572;">
-                            <h3 style="margin-left:10px">Grade & Section</h3>
-                        </div>
-                    </div>
-                    <div class="columns half-widths">
-                        <div class="containerss" style="background-color: #F3F3F3;">
-                        <input type="text" name="classification" id="classification" value="<?php echo $grade ?> - <?php echo $section ?>" class="rights" readonly>
-                        </div>
-                    </div>
-                </div>
+    <div class="columns">
+        <div class="containerss" style="background-color: #190572;">
+            <h3 style="margin-left:10px">Pupil's Name</h3>
+        </div>
+    </div>
+    <div class="columns column-rights">
+        <div class="containerss" style="background-color: #F3F3F3;">
+            <input type="text" name="fullname" id="fullname" value="<?php echo isset($fullname) && !empty($fullname) ? $fullname : ''; ?>" readonly>
+        </div>
+    </div>
+    <div class="columns column-lefts">
+        <div class="containerss" style="background-color: #190572;">
+            <h3 style="margin-left:10px">Grade & Section</h3>
+        </div>
+    </div>
+    <div class="columns half-widths">
+        <div class="containerss" style="background-color: #F3F3F3;">
+            <input type="text" name="classification" id="classification" value="<?php echo (isset($grade) && !empty($grade) ? $grade : '') . ' - ' . (isset($section) && !empty($section) ? $section : ''); ?>" class="rights" readonly>
+        </div>
+    </div>
+</div>
+
+<div class="rows">
+    <div class="columns">
+        <div class="containerss" style="background-color: #190572;">
+            <h3 style="margin-left:10px">Guardian Name</h3>
+        </div>
+    </div>
+    <div class="columns column-rights">
+        <div class="containerss editable-containers" style="background-color: #F3F3F3;">
+            <input type="text" name="gname" id="gname" value="<?php echo isset($gname) && !empty($gname) ? $gname : ''; ?>" placeholder=" " required>
+        </div>
+    </div>
+    <div class="columns column-lefts">
+        <div class="containerss" style="background-color: #190572;">
+            <h3 style="margin-left:10px">Contact Number</h3>
+        </div>
+    </div>
+    <div class="columns half-widths">
+        <div class="containerss editable-containers" style="background-color: #F3F3F3;">
+            <input type="text" name="number" id="cnumber" value="<?php echo isset($number) && !empty($number) ? $number : ''; ?>" placeholder=" " required class="rights">
+        </div>
+    </div>
+</div>
 
 
-                <div class="rows">
-                    <div class="columns">
-                        <div class="containerss" style="background-color: #190572;">
-                            <h3 style="margin-left:10px">Guardian Name</h3>
-                        </div>
-                    </div>
-                    <div class="columns column-rights">
-                        <div class="containerss editable-containers" style="background-color: #F3F3F3;">
-                            <input type="text" name="gname" id="gname" value="<?php echo $gname ?>" placeholder=" " required>
-                        </div>
-                    </div>
-                    <div class="columns column-lefts">
-                        <div class="containerss" style="background-color: #190572;">
-                            <h3 style="margin-left:10px">Contact Number</h3>
-                        </div>
-                    </div>
-                    <div class="columns half-widths">
-                        <div class="containerss editable-containers" style="background-color: #F3F3F3;">
-                            <input type="text" name="number" id="cnumber" value="<?php echo $number ?>" placeholder=" " required class="rights">
-                        </div>
-                    </div>
-                </div>
-
-                <table class="update-record" >
-                <tr id="row1">
-                        <th>Notes</th>
-                        <th>Topic/Matter</th>
-                        <th>Intervention</th>
-                        <th>Advice</th>
-                        <th>Recommended to</th>
-                    </tr>
-                <tr id="row2" class="table_body">
-                        <td><textarea name="notes" placeholder="Enter Notes"><?php echo $notes ?></textarea><span class="dates"></span></td>
-                        <td><textarea name="topic" placeholder="Enter Topic/Matter"><?php echo $topic ?></textarea><span class="dates"></span></td>
-                        <td><textarea name="intervention" placeholder="Enter Intervention"><?php echo $intervention ?></textarea><span class="dates"></span></td>
-                        <td><textarea name="advice" placeholder="Enter Advice"><?php echo $advice ?></textarea><span class="dates"></span></td>
-                        <td><textarea name="recomended" placeholder="Enter Recommended to"><?php echo $recomended ?></textarea><span class="dates"></span></td>
-                    </tr>
-                </table>
+                <table class="update-record">
+    <tr id="row1">
+        <th>Notes</th>
+        <th>Topic/Matter</th>
+        <th>Intervention</th>
+        <th>Advice</th>
+        <th>Recommended to</th>
+    </tr>
+    <tr id="row2" class="table_body">
+        <td><textarea name="notes" placeholder="Enter Notes"><?php echo isset($notes) && !empty($notes) ? $notes : ''; ?></textarea><span class="dates"></span></td>
+        <td><textarea name="topic" placeholder="Enter Topic/Matter"><?php echo isset($topic) && !empty($topic) ? $topic : ''; ?></textarea><span class="dates"></span></td>
+        <td><textarea name="intervention" placeholder="Enter Intervention"><?php echo isset($intervention) && !empty($intervention) ? $intervention : ''; ?></textarea><span class="dates"></span></td>
+        <td><textarea name="advice" placeholder="Enter Advice"><?php echo isset($advice) && !empty($advice) ? $advice : ''; ?></textarea><span class="dates"></span></td>
+        <td><textarea name="recomended" placeholder="Enter Recommended to"><?php echo isset($recomended) && !empty($recomended) ? $recomended : ''; ?></textarea><span class="dates"></span></td>
+    </tr>
+</table>
            
                 <button type="submit" name="save" class="saveButton">Save Changes</button>
             </form>
