@@ -1,6 +1,7 @@
 <?php
     include('../../../database.php');
     $quarter = $_GET['quarter'];
+
     if (isset($_POST['save'])) {
         // Retrieve form data
         $lrn = $_POST['lrn'];
@@ -12,6 +13,9 @@
         $intervention = $_POST['intervention'];
         $advice = $_POST['advice'];
         $recomended = $_POST['recomended'];
+        
+        // Get the current date
+        $intervened = date('Y-m-d');
 
         // Update query
         $sql = "UPDATE academic_filipino SET 
@@ -21,9 +25,10 @@
                     notes = ?, 
                     topic = ?, 
                     intervention = ?, 
-                    advice = ?,
-                    recomended = ?  
-                WHERE lrn =?  AND quarter = $quarter";
+                    advice = ?, 
+                    recomended = ?, 
+                    intervened = ?  -- Assuming there's a column named 'updated_at' for storing date
+                WHERE lrn =? AND quarter = $quarter";
 
         // Prepare statement
         $stmt = $conn->prepare($sql);
@@ -31,8 +36,8 @@
             die("Error preparing statement: " . $conn->error);
         }
 
-        // Bind parameters
-        $stmt->bind_param("sssssssss", $gname, $number, $status, $notes, $topic, $intervention, $advice,$recomended, $lrn);
+        // Bind parameters (added $current_date as the 9th parameter)
+        $stmt->bind_param("ssssssssss", $gname, $number, $status, $notes, $topic, $intervention, $advice, $recomended, $intervened, $lrn);
 
         // Execute the statement
         if ($stmt->execute() === false) {
@@ -46,6 +51,7 @@
     // Close connection
     $conn->close();
 ?>
+
 <?php
 include('../../../database.php');
 
@@ -73,6 +79,7 @@ if ($lrn) {
         $intervention = $row['intervention'];
         $notes = $row['notes'];
         $recomended = $row['recomended'];
+        $intervened = $row['intervened'];
     }
 } 
 $conn->close();
@@ -1396,7 +1403,7 @@ $conn->close();
 </div>
 
 
-                <table class="update-record">
+<table class="update-record">
     <tr id="row1">
         <th>Notes</th>
         <th>Topic/Matter</th>
@@ -1405,13 +1412,29 @@ $conn->close();
         <th>Recommended to</th>
     </tr>
     <tr id="row2" class="table_body">
-        <td><textarea name="notes" placeholder="Enter Notes"><?php echo isset($notes) && !empty($notes) ? $notes : ''; ?></textarea><span class="dates"></span></td>
-        <td><textarea name="topic" placeholder="Enter Topic/Matter"><?php echo isset($topic) && !empty($topic) ? $topic : ''; ?></textarea><span class="dates"></span></td>
-        <td><textarea name="intervention" placeholder="Enter Intervention"><?php echo isset($intervention) && !empty($intervention) ? $intervention : ''; ?></textarea><span class="dates"></span></td>
-        <td><textarea name="advice" placeholder="Enter Advice"><?php echo isset($advice) && !empty($advice) ? $advice : ''; ?></textarea><span class="dates"></span></td>
-        <td><textarea name="recomended" placeholder="Enter Recommended to"><?php echo isset($recomended) && !empty($recomended) ? $recomended : ''; ?></textarea><span class="dates"></span></td>
+        <td>
+            <textarea name="notes" placeholder="Enter Notes"><?php echo isset($notes) ? $notes : ''; ?></textarea>
+            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+        </td>
+        <td>
+            <textarea name="topic" placeholder="Enter Topic/Matter"><?php echo isset($topic) ? $topic : ''; ?></textarea>
+            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+        </td>
+        <td>
+            <textarea name="intervention" placeholder="Enter Intervention"><?php echo isset($intervention) ? $intervention : ''; ?></textarea>
+            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+        </td>
+        <td>
+            <textarea name="advice" placeholder="Enter Advice"><?php echo isset($advice) ? $advice : ''; ?></textarea>
+            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+        </td>
+        <td>
+            <textarea name="recomended" placeholder="Enter Recommended to"><?php echo isset($recomended) ? $recomended : ''; ?></textarea>
+            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+        </td>
     </tr>
 </table>
+
            
                 <button type="submit" name="save" class="saveButton">Save Changes</button>
             </form>
