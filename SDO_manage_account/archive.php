@@ -1,4 +1,77 @@
 <?php
+// Check if the unarchive button was clicked
+if (isset($_POST['unarchive'])) {
+    // Get the employment number from the hidden input
+    $employment_number = $_POST['employment_number'];
+
+    include('../database.php');
+
+    // Fetch the data from the archive table based on employment number
+    $sql = "SELECT * FROM archive WHERE employment_number = ?";
+    $stmt = $conn->prepare($sql);
+    $stmt->bind_param("s", $employment_number);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        // Get the row data
+        $row = $result->fetch_assoc();
+        $position = $row['position'];
+
+        // Prepare the insert SQL based on the position
+        if ($position == 'SDO Admin') {
+            $insertTable = 'sdo_admin';
+        } elseif ($position == 'Executive Committee') {
+            $insertTable = 'executive_committee';
+        } elseif ($position == 'School Admin') {
+            $insertTable = 'school_admin';
+        } else {
+            // Handle any other positions if needed
+            $insertTable = '';
+        }
+
+        // If a valid table was identified
+        if (!empty($insertTable)) {
+            // Insert the data into the correct table
+            $insertSql = "INSERT INTO $insertTable (fullname, employment_number, email, date, year, position, password, activation, verified) 
+                          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $stmt_insert = $conn->prepare($insertSql);
+            $stmt_insert->bind_param(
+                "sssssssss", 
+                $row['fullname'], 
+                $row['employment_number'], 
+                $row['email'], 
+                $row['date'], 
+                $row['year'], 
+                $row['position'], 
+                $row['password'], 
+                $row['activation'], 
+                $row['verified']
+            );
+
+            if ($stmt_insert->execute()) {
+                // If insert successful, delete the data from the archive
+                $deleteSql = "DELETE FROM archive WHERE employment_number = ?";
+                $stmt_delete = $conn->prepare($deleteSql);
+                $stmt_delete->bind_param("s", $employment_number);
+                $stmt_delete->execute();
+            } else {
+                echo "Error restoring record: " . $stmt_insert->error;
+            }
+        } else {
+            echo "Invalid position for this record.";
+        }
+    } else {
+        echo "Record not found in archive.";
+    }
+
+    // Close the connection
+    $conn->close();
+}
+?>
+
+
+<?php
     include('../database.php');
     if(isset($_POST['submit1'])) {
         // Retrieve form data
@@ -1118,7 +1191,7 @@ foreach ($data as $row) {
     echo "<td class='rows'>";
     echo "<form method='post' action=''>"; // Add form for the button
     echo "<input type='hidden' name='employment_number' value='" . $row['employment_number'] . "'>";
-    echo "<button style='background-color: #190572; color: white; padding: 5px 10px; width: 180px;' type='submit' name='unarchive'>Unarchive</button>"; // Unarchive button
+    echo "<button name='unarchive': style='background-color: #190572; color: white; padding: 5px 10px; width: 180px;' type='submit' name='unarchive'>Restore</button>"; // Unarchive button
     echo "</form>";
     echo "</td>";
     echo "</tr>";

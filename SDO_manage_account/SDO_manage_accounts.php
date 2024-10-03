@@ -247,10 +247,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $position = 'Unknown';
                 }
     
-                // Insert the data into the archive table
-                $sql_insert_archive = "INSERT INTO archive (fullname, employment_number, email, date, activation, position) VALUES (?, ?, ?, ?, ?,?)";
+                // Insert the data into the archive table, including password and verified columns
+                $sql_insert_archive = "INSERT INTO archive (fullname, employment_number, email, date, year, activation, position, password, verified) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
                 $stmt_archive = $conn->prepare($sql_insert_archive);
-                $stmt_archive->bind_param("ssssss", $row_data['fullname'], $row_data['employment_number'], $row_data['email'], $row_data['date'], $row_data['activation'], $row_data['position']);
+                $stmt_archive->bind_param("sssssssss", 
+                    $row_data['fullname'], 
+                    $row_data['employment_number'], 
+                    $row_data['email'], 
+                    $row_data['date'], 
+                    $row_data['year'], 
+                    $row_data['activation'], 
+                    $position,  // Use $position for the 'position' column
+                    $row_data['password'],  // Added 'password' column
+                    $row_data['verified']   // Added 'verified' column
+                );
                 $stmt_archive->execute();
     
                 // Delete the row from the original table
@@ -262,7 +272,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 // Break out of the loop once the record is found and archived
                 break;
             }
-        }
+        }    
     
         // Refresh the page after completing the archive process
         header("Location: " . $_SERVER['PHP_SELF']);
