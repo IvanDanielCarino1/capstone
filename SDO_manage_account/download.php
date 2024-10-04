@@ -1,46 +1,45 @@
-<form method="post">
-    <button type="submit" name="save">Download Table</button>
-</form>
-
 <?php
-// Check if the "save" button was clicked
-if (isset($_POST['save'])) {
-    // Database connection
-    include ('../database.php');
+include('../database.php');
 
-    // Query to fetch data from sdo_admin table
-    $sql = "SELECT * FROM sdo_admin";
+// Set the content type and filename
+header('Content-Type: text/csv');
+header('Content-Disposition: attachment; filename="data_export.csv"');
+
+// Create a file pointer connected to the output stream
+$output = fopen('php://output', 'w');
+
+// Function to output table data to CSV
+function exportTableToCSV($output, $conn, $tableName) {
+    $sql = "SELECT * FROM $tableName";
     $result = $conn->query($sql);
 
-    // Check if any records were returned
     if ($result->num_rows > 0) {
-        // Open output buffer for CSV file
-        header('Content-Type: text/csv');
-        header('Content-Disposition: attachment; filename="sdo_admin.csv"');
-
-        // Output file pointer connected to output buffer
-        $output = fopen('php://output', 'w');
-
-        // Fetch field names and write to the file as header row
-        $fields = $result->fetch_fields();
+        // Output column headings
+        $columns = $result->fetch_fields();
         $headers = [];
-        foreach ($fields as $field) {
-            $headers[] = $field->name;
+        foreach ($columns as $column) {
+            $headers[] = $column->name;
         }
         fputcsv($output, $headers);
 
-        // Write each row of data to the CSV file
+        // Output each row of the data
         while ($row = $result->fetch_assoc()) {
             fputcsv($output, $row);
         }
-
-        fclose($output);
-        exit();
-    } else {
-        echo "No records found!";
+        // Add a blank line to separate tables in the CSV
+        fputcsv($output, []);
     }
-
-    // Close connection
-    $conn->close();
 }
+
+// Export each table
+exportTableToCSV($output, $conn, 'sdo_admin');
+exportTableToCSV($output, $conn, 'executive_committee');
+exportTableToCSV($output, $conn, 'school_admin');
+
+// Close the file pointer
+fclose($output);
+
+// Close the connection
+$conn->close();
+exit();
 ?>

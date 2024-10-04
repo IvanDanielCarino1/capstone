@@ -1045,6 +1045,62 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             font-size: .9rem;
             padding: 5px;
         }
+        .hamburger-btn {
+    display: inline-block;
+    cursor: pointer;
+    padding: 5px;
+    border: none;
+    background: none;
+    width: 55px; /* Reduced button width */
+    position: absolute; /* Change to absolute positioning */
+    top: 10px; /* Adjust the vertical position as needed */
+    right: 20px; /* This positions the button 20px from the right edge */
+    margin-bottom: 15px; /* Add space below the button */
+}
+
+.hamburger-btn .line {
+    width: 40px; /* Keep the lines smaller to fit within button width */
+    height: 4px;
+    background-color: #190572;
+    margin: 6px 0;
+}
+
+/* Dropdown Menu Styles */
+.dropdown-menu {
+    display: none; /* Initially hide the dropdown */
+    position: absolute; /* Position it relative to the button */
+    top: 60px; /* Adjust based on your button's height */
+    right: 20px; /* Add space from the right edge */
+    background-color: white; /* Background color */
+    border: 1px solid #190572; /* Optional border */
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1); /* Optional shadow */
+    z-index: 10; /* Ensure it's on top */
+    width: 150px; /* Increase width of dropdown */
+    padding: 5px; /* Add padding for overall larger feel */
+}
+
+/* Dropdown List Styles */
+.dropdown-menu ul {
+    list-style-type: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+    margin: 0; /* Remove margin */
+}
+
+.dropdown-menu li {
+    padding: 15px; /* Increase padding for larger items */
+}
+
+.dropdown-menu li a {
+    text-decoration: none; /* Remove underline from links */
+    color: #190572; /* Link color */
+    font-size: 16px; /* Increase font size for better readability */
+}
+
+/* Optional: Hover effect for dropdown items */
+.dropdown-menu li:hover {
+    background-color: #f0f0f0; /* Change background on hover */
+}
+
 
         .column button{
             padding: 5px;
@@ -1235,9 +1291,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 </div>
                     
                 </div>
-                <div class="archive">
-                <a href="archive.php"><button>Archive</button></a>
-            </div>
+            <button class="hamburger-btn" aria-label="Menu" onclick="toggleDropdown()">
+    <div class="line"></div>
+    <div class="line"></div>
+    <div class="line"></div>
+</button>
+
+<div class="dropdown-menu" id="dropdownMenu">
+    <ul>
+        <li><a href="archive.php">Archives</a></li>
+        <li><a href="#">Deactivated</a></li>
+        <li><a href="#" onclick="downloadData()">Save Data</a></li>
+    </ul>
+</div>
+
+
             </div>
             
         </div>
@@ -1575,5 +1643,27 @@ foreach ($data as $row) {
         document.getElementById('topdown1').value = "<?php echo $_POST['school-year']; ?>";
     <?php endif; ?>
 </script>
+<script>
+    function toggleDropdown() {
+        const dropdown = document.getElementById("dropdownMenu");
+        dropdown.style.display = dropdown.style.display === "block" ? "none" : "block";
+    }
+
+    // Optional: Close the dropdown if clicking outside of it
+    window.onclick = function(event) {
+        const dropdown = document.getElementById("dropdownMenu");
+        const hamburger = document.querySelector('.hamburger-btn');
+        
+        if (!event.target.matches('.hamburger-btn') && dropdown.style.display === "block") {
+            dropdown.style.display = "none";
+        }
+    };
+</script>
+<script>
+function downloadData() {
+    window.location.href = 'download.php';
+}
+</script>
+
 </body>
 </html>
