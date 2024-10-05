@@ -142,7 +142,7 @@
     // Loop through each table
     foreach ($tables as $table) {
         // Prepare the SQL query with a placeholder for the school year
-        $sql = "SELECT fullname, employment_number, email, date FROM $table WHERE year = ?";
+        $sql = "SELECT fullname, employment_number, email, date, activation FROM $table WHERE year = ?";
         
         // Prepare and bind the statement
         $stmt = $conn->prepare($sql);
@@ -170,18 +170,18 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (isset($_POST["activate"])) {
         // Get the employment number from the form submission
         $employment_number = $_POST["employment_number"];
-
+    
         // Prepare and execute SELECT queries to check if employment_number exists in each table
         $tables = ['sdo_admin', 'executive_committee', 'school_admin'];
         $found = false;
-
+    
         foreach ($tables as $table) {
             $sql = "SELECT * FROM $table WHERE employment_number = ?";
             $stmt = $conn->prepare($sql);
             $stmt->bind_param("s", $employment_number);
             $stmt->execute();
             $result = $stmt->get_result();
-
+    
             if ($result->num_rows > 0) {
                 // If employment_number found in table, update activation column
                 $found = true;
@@ -191,29 +191,51 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt_update->execute();
             }
         }
-    } elseif (isset($_POST["deactivate"])) { // Check if the "deactivate" button was clicked
+        $stmt->close();
+        if ($found) {
+            $stmt_update->close();
+        }
+    
+        // Redirect to the same page to reload the updated content
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit(); // Make sure to call exit() after a redirect to stop further execution
+    
+    
+    } elseif (isset($_POST["deactivate"])) { 
+        // Check if the "deactivate" button was clicked
         // Get the employment number from the form submission
         $employment_number = $_POST["employment_number"];
-
+    
         // Prepare and execute UPDATE queries to deactivate the user only in the table where employment_number is found
         $tables = ['sdo_admin', 'executive_committee', 'school_admin'];
-
+    
         foreach ($tables as $table) {
             $sql_check = "SELECT * FROM $table WHERE employment_number = ?";
             $stmt_check = $conn->prepare($sql_check);
             $stmt_check->bind_param("s", $employment_number);
             $stmt_check->execute();
             $result_check = $stmt_check->get_result();
-
+    
             if ($result_check->num_rows > 0) {
                 $sql_update = "UPDATE $table SET activation = 'deactivate' WHERE employment_number = ?";
                 $stmt_update = $conn->prepare($sql_update);
                 $stmt_update->bind_param("s", $employment_number);
                 $stmt_update->execute();
+    
                 // Since we found the employment number in one table, we can break out of the loop
                 break;
             }
         }
+    
+        // Close the statements
+        $stmt_check->close();
+        $stmt_update->close();
+    
+        // Redirect to the same page to reload the updated content
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit(); // Make sure to call exit() after a redirect to stop further execution
+        
+        
     } elseif (isset($_POST["archive"])) { // Check if the "archive" button was clicked
         // Get the employment number from the form submission
         $employment_number = $_POST["employment_number"];
@@ -1147,7 +1169,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             padding-right: 5px;
         }
 
-
+        .deactivated-row {
+        background-color: #ff7f7f; /* Light gray */
+    }
             .modal {
                 display: none;
                 position: fixed;
@@ -1311,18 +1335,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <div id="myModal" class="modal">
-            <div class="modal-content">
-                <span class="close">&times;</span>
-                <form action="" method="post">
-                <h5>ADD SCHOOL YEAR</h5>
-                <label for="start">START OF SCHOOL YEAR</label>
-                    <input type="date" name="start" id="startDateCalendar">
-                <label for="end">END OF SCHOOL YEAR</label>
-                    <input type="date" name="end" id="endDateCalendar">
-                <button id="submitBtn" name="add" style="width: 100%;">Submit</button>
-                </form>
-            </div>
-        </div>
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <form action="" method="post">
+            <h5>ADD SCHOOL YEAR</h5>
+            <label for="start">START OF SCHOOL YEAR</label>
+            <input type="date" name="start" id="startDateCalendar">
+            <label for="end">END OF SCHOOL YEAR</label>
+            <input type="date" name="end" id="endDateCalendar">
+            <button id="submitBtn" name="add" style="width: 100%;">Submit</button>
+        </form>
+    </div>
+</div>
+
 
         <div class="inner-container">
     <div class="bottom-inner-container2">
@@ -1342,7 +1367,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <table class="table">
     <?php
 foreach ($data as $row) {
-    echo "<tr class='sheshable'>";
+    // Set row class to 'deactivated-row' if the activation status is 'deactivate'
+    $rowClass = ($row['activation'] === 'deactivate') ? 'deactivated-row' : '';
+    
+    echo "<tr class='sheshable $rowClass'>";
     echo "<td class='rows'>" . $row['fullname'] . "</td>";
     echo "<td class='rows'>" . $row['employment_number'] . "</td>";
     echo "<td class='rows'>" . $row['email'] . "</td>";
@@ -1370,6 +1398,7 @@ foreach ($data as $row) {
     echo "</tr>";
 }
 ?>
+
 
 </table>
 
