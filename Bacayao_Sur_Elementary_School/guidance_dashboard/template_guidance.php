@@ -255,10 +255,12 @@
         }
 
         .wide-row {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: space-between; 
-        }
+    display: flex;
+    flex-wrap: nowrap; /* Prevent wrapping */
+    justify-content: space-between;
+    align-items: center; /* Align items in the center vertically */
+    gap: 10px; /* Add small space between items */
+}
 
         .column {
             flex: 0 0 calc(16.6667%);
@@ -1382,7 +1384,7 @@
                 </div>
             </div>
         </div>
-            <!--<div class="legend-container">
+            <div class="legend-container">
                     <div class="legend-item">
                         <div class="legend-color unresolved"></div>
                         <p>Unresolved</p>
@@ -1399,7 +1401,7 @@
                         <div class="legend-color resolved"></div>
                         <p>Resolved</p>
                     </div>
-                </div> -->
+                </div>
                 <div class="legend-containers">
                     <div class="legend-item">
                         <i class="par-icon bx bx-face icon"></i>

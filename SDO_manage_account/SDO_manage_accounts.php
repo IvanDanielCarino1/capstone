@@ -1323,8 +1323,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <div class="dropdown-menu" id="dropdownMenu">
     <ul>
-        <li><a href="archive.php">Archives</a></li>
-        <li><a href="#">Deactivated</a></li>
+        <li><a href="archive.php?employment_number=<?php echo isset($_GET['employment_number']) ? $_GET['employment_number'] : 'default_value'; ?>">Archives</a></li>
+        
         <li><a href="#" onclick="downloadData()">Save Data</a></li>
     </ul>
 </div>
@@ -1382,7 +1382,8 @@ foreach ($data as $row) {
     echo "<button class='action-button' onclick='toggleActionsDropdown()'>Actions</button>";
     echo "<div class='action-option' id='actionsDropdown'>";
     echo "<button onclick='toggleEditContainer(this)'>Edit</button>";
-    echo "<form method='post' action=''>";
+    $employment_number = isset($_GET['employment_number']) ? $_GET['employment_number'] : 'default_value';
+    echo "<form method='post' action='SDO_manage_accounts.php?employment_number=" . htmlspecialchars($employment_number) . "'>";
     echo "<input type='hidden' name='employment_number' value='" . $row['employment_number'] . "'>";
     echo "<button type='submit' name='activate'>Activate</button>";
     echo "<input type='hidden' name='employment_number' value='" . $row['employment_number'] . "'>";

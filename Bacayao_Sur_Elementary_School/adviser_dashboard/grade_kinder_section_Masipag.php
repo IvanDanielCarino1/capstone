@@ -65,7 +65,32 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
         }
     }
 ?>
+<?php
+    include('../../database.php');
+    $filename = basename($_SERVER['PHP_SELF']);
 
+    // Split the filename by underscores
+    $filename_parts = explode('_', $filename);
+
+    // Get the 2nd and 4th word (assuming zero-based index)
+    $second_word = isset($filename_parts[1]) ? $filename_parts[1] : '';
+    $fourth_word = isset($filename_parts[3]) ? $filename_parts[3] : '';
+
+    // Get the tablename from the filename
+    $tablename = strtolower(str_replace('.php', '', $filename));
+
+    // Prepare and bind the parameters for the SQL query
+    $stmt = $conn->prepare("SELECT lrn, fullname, school, grade, section FROM $tablename WHERE school = 'Bacayao Sur Elementary School' AND grade = ? AND section = ?");
+    $stmt->bind_param("ss", $second_word, $fourth_word);
+
+    // Execute the statement
+    $stmt->execute();
+    $lrnresult = $stmt->get_result();
+
+    // Close the statement
+    $stmt->close();
+    $conn->close();
+?>
 <?php
     include('../../database.php');
 
@@ -102,7 +127,26 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
 
     $conn->close();
 ?>
+<?php
 
+    $filename = basename(__FILE__, '.php');
+    $parts = explode('_', $filename);
+    $grade = $parts[1]; // Second word
+    $section = $parts[3]; // Fourth word
+
+    // School
+    $school = "Bacayao Sur Elementary School";
+
+    include('../../database.php');
+
+    // SQL query to retrieve LRN, fullname, and status
+    $selectedQuarter = isset($_POST['quarter']) ? $_POST['quarter'] : 1;
+    $sql = "SELECT lrn, fullname, status FROM academic_english WHERE grade = '$grade' AND section = '$section' AND school = '$school' AND quarter = $selectedQuarter";
+
+    $englishresult = $conn->query($sql);
+
+    $conn->close();
+?>
 <?php
 
     $filename = basename(__FILE__, '.php');
@@ -2027,12 +2071,6 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
             <div class="column column-right">
                 <div class="select-wrapper1">
                 <form id="quarterForm1" method="post" action="">
-                    <select id="quarterSelect" name="quarter" onchange="submitForm()" class="containerss seconds" style="background-color: #F3F3F3; color:#130550">
-                        <option value="1" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '1') echo 'selected'; ?>>Quarter 1</option>
-                        <option value="2" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '2') echo 'selected'; ?>>Quarter 2</option>
-                        <option value="3" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '3') echo 'selected'; ?>>Quarter 3</option>
-                        <option value="4" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '4') echo 'selected'; ?>>Quarter 4</option>
-                    </select>
                      
                 </form>
 
@@ -2159,8 +2197,8 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
 
         <!---------------------------------- START ----------------------------------------->
     <!---------------------------------- ALL STUDENTS ----------------------------------------->
-    <table border="0" id="pupilTable">
-    <thead>
+<table border="0" id="pupilTable">
+<thead>
         <tr>
             <th style='width:25%'>LRN</th>
             <th style='width:35%'>Pupil's Name</th>
@@ -2170,21 +2208,18 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
     </thead>
     <tbody>
     <?php
-    // Check if quarter is set, if not default to quarter 1
-    $quarter = isset($_POST['quarter']) ? $_POST['quarter'] : 1;
-
     if ($lrnresult->num_rows > 0) {
         // Output data of each row
         while ($row = $lrnresult->fetch_assoc()) {
-            // Check if LRN exists in the different tables for the selected quarter
+            // Check if LRN exists in the different tables
             $lrn = $row['lrn'];
             $showE = $showF = $showN = $showB = '';
 
             // Assuming $conn is your database connection
-            $queryE = "SELECT 1 FROM academic_english WHERE lrn = '$lrn' AND quarter = '$quarter' LIMIT 1";
-            $queryF = "SELECT 1 FROM academic_filipino WHERE lrn = '$lrn' AND quarter = '$quarter' LIMIT 1";
-            $queryN = "SELECT 1 FROM academic_numeracy WHERE lrn = '$lrn' AND quarter = '$quarter' LIMIT 1";
-            $queryB = "SELECT 1 FROM behavioral WHERE lrn = '$lrn' AND quarter = '$quarter' LIMIT 1";
+            $queryE = "SELECT 1 FROM academic_english WHERE lrn = '$lrn' LIMIT 1";
+            $queryF = "SELECT 1 FROM academic_filipino WHERE lrn = '$lrn' LIMIT 1";
+            $queryN = "SELECT 1 FROM academic_numeracy WHERE lrn = '$lrn' LIMIT 1";
+            $queryB = "SELECT 1 FROM behavioral WHERE lrn = '$lrn' LIMIT 1";
 
             if ($conn->query($queryE)->num_rows > 0) {
                 $showE = 'E';

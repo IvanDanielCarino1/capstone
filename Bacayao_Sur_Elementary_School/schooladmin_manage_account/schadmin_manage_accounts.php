@@ -1,4 +1,9 @@
 <?php
+if (isset($_POST['upload'])) {
+    header("Location: ../manage_student/Add_Studentlist_import.php");
+}
+?>
+<?php
     include('../../database.php');
 
     if(isset($_POST['submit1'])) {
