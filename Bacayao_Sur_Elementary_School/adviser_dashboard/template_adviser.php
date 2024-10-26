@@ -46,24 +46,24 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
     $conn->close();
 ?>
 <?php
-    if(isset($_POST['print'])) {
-        $filename = basename($_SERVER['PHP_SELF']);
-        $words = explode('_', $filename);
-        
-        if(count($words) >= 4) {
-            $grade = $words[1];
-            $section = $words[3];
+if (isset($_POST['print'])) {
+    // Get the filename of the current script
+    $filename = basename($_SERVER['PHP_SELF'], ".php");
+
+    // Split the filename into words
+    $words = explode(" ", str_replace(["_", "-"], " ", $filename));
+
+    // Check if the second and fourth words exist, and then print them
+    $secondWord = isset($words[1]) ? $words[1] : "No second word";
+    $fourthWord = isset($words[3]) ? $words[3] : "No fourth word";
+
+    $employment_number = $_GET['employment_number'] ?? 'default_value';
             
-            
-            $employment_number = isset($_GET['employment_number']) ? $_GET['employment_number'] : 'default_value';
-            $filename1 = basename($_SERVER['PHP_SELF']);
-            
-            $redirect_url = "adviser_dashboard_print.php?grade=$grade&section=$section&employment_number=$employment_number&filename=$filename1&quarter=1";
+            $redirect_url = "adviser_dashboard_print.php?grade=$secondWord&section=$fourthWord&employment_number=$employment_number&filename=$filename&quarter=1";
             
             header("Location: $redirect_url");
             exit();
-        }
-    }
+}
 ?>
 <?php
     include('../../database.php');
@@ -208,25 +208,6 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
     $conn->close();
 ?>
 <?php
-    include('../../database.php');
-    $query = "SELECT start, end FROM school_year ORDER BY start DESC";
-    $result = mysqli_query($conn, $query);
-
-    // Array to store all school year options
-    $school_years = array();
-
-    if ($result && mysqli_num_rows($result) > 0) {
-        while ($row = mysqli_fetch_assoc($result)) {
-            $start_year = $row['start'];
-            $end_year = $row['end'];
-            $school_years[$start_year] = $start_year . ' - ' . $end_year;
-        }
-    }
-
-    // Close database conn
-    mysqli_close($conn);
-?>
-<?php
     $filename = basename($_SERVER['PHP_SELF']);
     $employment_number = isset($_GET['employment_number']) ? $_GET['employment_number'] : 'default_value';
 ?>
@@ -302,26 +283,9 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
     }
     $conn->close();
 ?>
-<?php
-    if(isset($_POST['print'])) {
-        $filename = basename($_SERVER['PHP_SELF']);
-        $words = explode('_', $filename);
-        
-        if(count($words) >= 4) {
-            $grade = $words[1];
-            $section = $words[3];
-            
-            
-            $employment_number = isset($_GET['employment_number']) ? $_GET['employment_number'] : 'default_value';
-            $filename1 = basename($_SERVER['PHP_SELF']);
-            
-            $redirect_url = "adviser_dashboard_print.php?grade=$grade&section=$section&employment_number=$employment_number&filename=$filename1&quarter=1";
-            
-            header("Location: $redirect_url");
-            exit();
-        }
-    }
-?>
+
+
+
 <?php
     include('../../database.php');
 
@@ -2071,39 +2035,16 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
             <div class="column column-right">
                 <div class="select-wrapper1">
                 <form id="quarterForm1" method="post" action="">
-                     
+                    <select id="quarterSelect" name="quarter" onchange="submitForm()">
+                        <option value="1" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '1') echo 'selected'; ?>>Quarter 1</option>
+                        <option value="2" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '2') echo 'selected'; ?>>Quarter 2</option>
+                        <option value="3" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '3') echo 'selected'; ?>>Quarter 3</option>
+                        <option value="4" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '4') echo 'selected'; ?>>Quarter 4</option>
+                    </select>
                 </form>
-
-                </div>
-            </div>
-            <div class="column column-left">
-                <div class="containers" style="background-color: transparent; ">
-                    <h3 style="margin-left:10%; margin-right:10%; color: #130550; letter-spacing: 2px; ">Select to View:</h3>
-                </div>
-            </div>
-            <div class="column half-width" >
-                <div class="containers" style="background-color: #F3F3F3; display: none;">
                 </div>
             </div>
         </div>
-            <!--<div class="legend-container">
-                    <div class="legend-item">
-                        <div class="legend-color unresolved"></div>
-                        <p>Unresolved</p>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color pending"></div>
-                        <p>Pending</p>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color on-going"></div>
-                        <p>On Going</p>
-                    </div>
-                    <div class="legend-item">
-                        <div class="legend-color resolved"></div>
-                        <p>Resolved</p>
-                    </div>
-                </div> -->
                 <div class="checkbox-container">
                     <div class="legend-container left-container">
                         <div class="legend-item">
@@ -2208,50 +2149,53 @@ $selectedSchoolYear = isset($_POST['school-year']) ? $_POST['school-year'] : dat
     </thead>
     <tbody>
     <?php
-    if ($lrnresult->num_rows > 0) {
-        // Output data of each row
-        while ($row = $lrnresult->fetch_assoc()) {
-            // Check if LRN exists in the different tables
-            $lrn = $row['lrn'];
-            $showE = $showF = $showN = $showB = '';
+// Capture the selected quarter from the form submission
+$quarter = isset($_POST['quarter']) ? intval($_POST['quarter']) : 1; // Default to Quarter 1
 
-            // Assuming $conn is your database connection
-            $queryE = "SELECT 1 FROM academic_english WHERE lrn = '$lrn' LIMIT 1";
-            $queryF = "SELECT 1 FROM academic_filipino WHERE lrn = '$lrn' LIMIT 1";
-            $queryN = "SELECT 1 FROM academic_numeracy WHERE lrn = '$lrn' LIMIT 1";
-            $queryB = "SELECT 1 FROM behavioral WHERE lrn = '$lrn' LIMIT 1";
+// Your SQL query for LRN results remains unchanged
+if ($lrnresult->num_rows > 0) {
+    while ($row = $lrnresult->fetch_assoc()) {
+        $lrn = $row['lrn'];
+        $showE = $showF = $showN = $showB = '';
 
-            if ($conn->query($queryE)->num_rows > 0) {
-                $showE = 'E';
-            }
-            if ($conn->query($queryF)->num_rows > 0) {
-                $showF = 'F';
-            }
-            if ($conn->query($queryN)->num_rows > 0) {
-                $showN = 'N';
-            }
-            if ($conn->query($queryB)->num_rows > 0) {
-                $showB = 'B';
-            }
+        // Modify queries to filter based on the selected quarter
+        $queryE = "SELECT 1 FROM academic_english WHERE lrn = '$lrn' AND quarter = $quarter LIMIT 1";
+        $queryF = "SELECT 1 FROM academic_filipino WHERE lrn = '$lrn' AND quarter = $quarter LIMIT 1";
+        $queryN = "SELECT 1 FROM academic_numeracy WHERE lrn = '$lrn' AND quarter = $quarter LIMIT 1";
+        $queryB = "SELECT 1 FROM behavioral WHERE lrn = '$lrn' AND quarter = $quarter LIMIT 1";
 
-            echo "<tr class='sheshable'>";
-            echo "<td style='width:25%'>" . $lrn . "</td>";
-            echo "<td style='width:35%'>" . $row["fullname"] . "</td>";
-            echo "<td style='width:28%' class='act'>";
-            echo "<div class='icon-container'>";
-            if ($showE) echo $showE . "<i class='vertical-lines'></i>";
-            if ($showF) echo $showF . "<i class='vertical-lines'></i>";
-            if ($showN) echo $showN . "<i class='vertical-lines'></i>";
-            if ($showB) echo $showB;
-            echo "</div>";
-            echo "</td>";
-            echo "<td style='width:35%' class='act'>";
-            echo "<a href='par_form.php?file=$filename&employment_number=$employment_number&lrn={$lrn}&school={$row['school']}&grade={$row['grade']}&section={$row['section']}&fullname={$row['fullname']}&quarter=$quarter'><button class='updateRecordButton'>ADD PUPIL AT RISK</button></a>";
-            echo "</td>";
-            echo "</tr>";
+        if ($conn->query($queryE)->num_rows > 0) {
+            $showE = 'E';
         }
+        if ($conn->query($queryF)->num_rows > 0) {
+            $showF = 'F';
+        }
+        if ($conn->query($queryN)->num_rows > 0) {
+            $showN = 'N';
+        }
+        if ($conn->query($queryB)->num_rows > 0) {
+            $showB = 'B';
+        }
+
+        echo "<tr class='sheshable'>";
+        echo "<td style='width:25%'>" . $lrn . "</td>";
+        echo "<td style='width:35%'>" . $row["fullname"] . "</td>";
+        echo "<td style='width:28%' class='act'>";
+        echo "<div class='icon-container'>";
+        if ($showE) echo $showE . "<i class='vertical-lines'></i>";
+        if ($showF) echo $showF . "<i class='vertical-lines'></i>";
+        if ($showN) echo $showN . "<i class='vertical-lines'></i>";
+        if ($showB) echo $showB;
+        echo "</div>";
+        echo "</td>";
+        echo "<td style='width:35%' class='act'>";
+        echo "<a href='par_form.php?file=$filename&employment_number=$employment_number&lrn={$lrn}&school={$row['school']}&grade={$row['grade']}&section={$row['section']}&fullname={$row['fullname']}&quarter=$quarter'><button class='updateRecordButton'>ADD PUPIL AT RISK</button></a>";
+        echo "</td>";
+        echo "</tr>";
     }
-    ?>
+}
+?>
+
     </tbody>
 </table>
 

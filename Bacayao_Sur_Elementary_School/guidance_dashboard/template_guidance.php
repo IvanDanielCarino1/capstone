@@ -7,7 +7,7 @@
 
     // SQL query to retrieve LRN, fullname, and status
     $selectedQuarter = isset($_POST['quarter']) ? $_POST['quarter'] : 1;
-    $sql = "SELECT lrn, fullname, status FROM behavioral WHERE school = '$school' AND quarter = $selectedQuarter";
+    $sql = "SELECT lrn, fullname, grade, section, status FROM behavioral WHERE school = '$school' AND quarter = $selectedQuarter";
 
     $behavioalresult = $conn->query($sql);
 
@@ -28,6 +28,53 @@
     } 
     $conn->close();
 ?>
+<?php
+    
+    include("../../database.php");
+    $employment_number = $_GET['employment_number'];
+        $sql = "SELECT fullname FROM counselor WHERE school = 'Bacayao Sur Elementary School'";
+        $result2 = $conn->query($sql);
+    
+?>
+<?php
+if (isset($_GET['employment_number'])) {
+    $employment_number = $_GET['employment_number'];
+    $result1 = $employment_number;
+}
+?>
+<?php
+    include('../../database.php');
+    $tables = ['behavioral'];
+    $count = 0;
+    $lrnCounted = array(); // Array to keep track of LRNs already counted
+
+    foreach ($tables as $table) {
+        $sql = "SELECT lrn FROM $table WHERE school = 'Bacayao Sur Elementary School'";
+        $result = $conn->query($sql);
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $lrn = $row['lrn'];
+                if (!in_array($lrn, $lrnCounted)) {
+                    // If LRN not already counted, add it to the count and mark as counted
+                    $count++;
+                    $lrnCounted[] = $lrn;
+                }
+            }
+        }
+    }
+    $conn->close();
+?>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if the submit1 button was clicked
+    if (isset($_POST['submit1'])) {
+        // Redirect to haha.php
+        header("Location: haha.php");
+        exit();
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1307,18 +1354,14 @@
                     <h3 style="margin-left:7px">Employee Number</h3>
                 </div>
             </div>
-            <!--?php
-            if ($result1->num_rows > 0) {
-                // Get the data of the first row
-                $row = $result1->fetch_assoc();
-                $employment_number = $row["employment_number"];
+            <?php
                 echo "<div class=\"column column-right\">
                 <div class=\"containers\" style=\"background-color: #F3F3F3;\">
                     <h3 style=\"color: #190572; margin-left:7px\">$employment_number</h3>
                 </div>
             </div>";
-            }
-            ?-->
+            
+            ?>
 
             <div class="column column-left">
                 <div class="containers" style="background-color: #190572;">
@@ -1327,13 +1370,9 @@
             </div>
             <div class="column half-width">
                 <div class="containers" style="background-color: #F3F3F3;">
-                <!--?php 
-                        $capitalizedSecondWord = ucfirst($secondWord);
-                        echo '<h3 style="color: #190572; margin-left:7px">' . $capitalizedSecondWord . '&nbsp;-&nbsp;' . ucfirst($fourthWord) . '</h3>';
-                    ?-->    
+                    <h3 style="color: #190572; margin-left:7px"><?php echo $count ?></h3>
+                </div>
             </div>
-            </div>
-
         </div>
 
 
@@ -1343,7 +1382,7 @@
                     <h3 style="margin-left:7px">Guidance Counselor</h3>
                 </div>
             </div>
-            <!--?php
+            <?php
             if ($result2->num_rows > 0) {
                 $row = $result2->fetch_assoc();
                 $fullname = $row["fullname"];
@@ -1353,7 +1392,7 @@
                 </div>
             </div>";
             }
-            ?-->
+            ?>
 
             <div class="column column-left">
                
@@ -1366,24 +1405,27 @@
         </div>
 
         <div class="row">
-            <div class="column">
-                <div class="containers" style="background-color: #190572;">
-                    <h3 style="margin-left: 7px">Quarter</h3>
-                </div>
-            </div>
-            <div class="column column-right">
-                <div class="select-wrapper1">
-                <form id="quarterForm1" method="post" action="">
-                    <select id="quarterSelect" name="quarter" onchange="submitForm()">
-                        <option value="1" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '1') echo 'selected'; ?>>Quarter 1</option>
-                        <option value="2" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '2') echo 'selected'; ?>>Quarter 2</option>
-                        <option value="3" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '3') echo 'selected'; ?>>Quarter 3</option>
-                        <option value="4" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '4') echo 'selected'; ?>>Quarter 4</option>
-                    </select>
-                </form>
-                </div>
-            </div>
+    <div class="column">
+        <div class="containers" style="background-color: #190572;">
+            <h3 style="margin-left: 7px">Quarter</h3>
         </div>
+    </div>
+    <div class="column column-right">
+        <div class="select-wrapper1">
+            <form id="quarterForm1" method="post" action="">
+                <select id="quarterSelect" name="quarter" onchange="submitForm()" style="padding: 5px; height: auto; width: 540px; border: none; background: #fff;">
+                    <option value="1" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '1') echo 'selected'; ?>>Quarter 1</option>
+                    <option value="2" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '2') echo 'selected'; ?>>Quarter 2</option>
+                    <option value="3" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '3') echo 'selected'; ?>>Quarter 3</option>
+                    <option value="4" <?php if(isset($_POST['quarter']) && $_POST['quarter'] == '4') echo 'selected'; ?>>Quarter 4</option>
+                </select>
+            </form>
+        </div>
+    </div>
+</div>
+
+
+
             <div class="legend-container">
                     <div class="legend-item">
                         <div class="legend-color unresolved"></div>
@@ -1422,7 +1464,7 @@
             </div>
             <div class="wide-column">
                 <div class="containers">
-                    <h3 style="padding: 2px;">P.A.R. Identification</h3>
+                    <h3 style="padding: 2px;">Grade and Section</h3>
                 </div>
             </div>
 
@@ -1444,29 +1486,27 @@
         // Output data of each row
         while ($row = $behavioalresult->fetch_assoc()) {
             echo "<tr class='sheshable'>";
-            echo "<th style='width:20%'>" . $row["lrn"] . "</th>";
-            echo "<th style='width:25.7%'>" . $row["fullname"] . "</th>";
-            echo "<th style='width:20%' class='act'>";
-            echo "<div class='icon-container'>";
-            echo "<a href='../../classifications/Behavioral.php?lrn=" . htmlspecialchars($row["lrn"]) . "&quarter=" . (isset($_POST['quarter']) ? $_POST['quarter'] : '1') . "'><i class='par-icon bx bx-face icon' onclick='showPupilRecordBehavioral()'></i></a>";
-            echo "</div>";
-            echo "</th>";
-            echo "<th style='width:20%'>" . $row["status"] . "</th>";
+            echo "<th style='width:18%'>" . htmlspecialchars($row["lrn"]) . "</th>";
+            echo "<th style='width:27%'>" . htmlspecialchars($row["fullname"]) . "</th>";
+            echo "<th style='width:19%'>" . ucfirst(htmlspecialchars($row["grade"])) . " - " . ucfirst(htmlspecialchars($row["section"])) . "</th>";
+            echo "<th style='width:20%'>" . htmlspecialchars($row["status"]) . "</th>";
             echo "<th style='width:25%' class='act'>";
-            echo "<button type='submit' name='submit1' style='background-color:#070000' class='updateRecordButtons'>REMOVE PUPIL AT RISK</button>";
+            
+            // Start the form for each row
+            echo "<form method='post' action='haha.php' style='display:inline;'>";
+            // Add hidden input to store the unique identifier for the record, if necessary
+            echo "<input type='hidden' name='lrn' value='" . htmlspecialchars($row["lrn"]) . "'>";
+            echo "<button type='submit' name='submit1' style='background-color:#170C59; width: 260px; padding: 3px; margin: 8px;' class='updateRecordButtons'>UPDATE RECORD</button>";
+
+            echo "</form>"; // End the form
+            
             echo "</th>";
             echo "</tr>";
         }
     }
     ?>
-    <tr>
-        <td colspan="5">
-            <div class="save">
-                <a href="update_all_records/update_behavioral.php"><button id="save">Update All Records</button></a>
-            </div>
-        </td>
-    </tr>
 </table>
+
 
 
     </div>
@@ -1608,10 +1648,6 @@
                 
             </div>
         </form>
-
-        <div class="save">
-            <button id="save">Update All Records</button>
-        </div>
         <div class="pagination">
             <button id="prevbutton" onclick="prevPageReportTable()">Previous</button>
             <button id="nextbutton" onclick="nextPageReportTable()">Next</button>

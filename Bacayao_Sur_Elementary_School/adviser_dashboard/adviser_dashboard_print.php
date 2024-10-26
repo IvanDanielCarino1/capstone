@@ -28,13 +28,13 @@
 <?php
     include('../../database.php');
     $grade = $_GET['grade'];
-    $section = $_GET['section'];
+    $section = strtolower($_GET['section']); // Convert section to lowercase
     $tables = ['academic_english', 'academic_filipino', 'academic_numeracy', 'behavioral'];
     $count = 0;
     $lrnCounted = array(); // Array to keep track of LRNs already counted
 
     foreach ($tables as $table) {
-        $sql = "SELECT lrn FROM $table WHERE grade = '$grade' AND section = '$section' AND school = 'Bacayao Sur Elementary School'";
+        $sql = "SELECT lrn FROM $table WHERE grade = '$grade' AND LOWER(section) = '$section' AND school = 'Bacayao Sur Elementary School'";
         $result = $conn->query($sql);
         if ($result->num_rows > 0) {
             while ($row = $result->fetch_assoc()) {
@@ -49,6 +49,7 @@
     }
     $conn->close();
 ?>
+
 <?php
     include('../../database.php');
 
@@ -85,6 +86,18 @@
 
     $conn->close();
 ?>
+<?php
+// Retrieve the values from the URL
+$grade = $_GET['grade'] ?? null;  // Use null coalescing operator to avoid undefined index
+$section = $_GET['section'] ?? null;
+
+// Check if both grade and section are set
+if ($grade !== null && $section !== null) {
+    // Create the filename
+    $filename = "grade_{$grade}_section_{$section}.php";
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -102,24 +115,46 @@
             padding: 5px;
             color: black;
             display: flex;
-            align-items: center;
+            flex-direction: column;
+            align-items: flex-start; /* Align the first header to the left */
             justify-content: flex-start;
         }
-        header img {
-            margin-right: 15px;
-        }
-
-        header h2{
+        header h2 {
             font-size: 15px;
+            margin: 0;
         }
-        .update{
+        .school-name {
+    text-align: center; /* Center the school name */
+    font-size: 30px; /* Larger font size for the school name */
+    font-weight: bold;
+    margin-top: 5px; /* Space between the two headers */
+    width: 100%; /* Make the school name take full width for centering */
+    background-color: #170C59; /* Background color for the school name */
+    padding: 10px; /* Padding for the background color */
+    border-radius: 5px; /* Optional: add rounded corners */
+    color: white; /* Change font color to white */
+    display: flex; /* Use flexbox for alignment */
+    align-items: center; /* Center items vertically */
+    justify-content: center; /* Center items horizontally */
+}
+
+.school-logo {
+    width: 80px; /* Set the width of the logo to make it larger */
+    height: auto; /* Maintain aspect ratio */
+    margin-right: 10px; /* Space between the image and text */
+}
+
+
+
+
+        .update {
             margin-top: 20px;
             width: 550px;
             display: grid;
             grid-template-columns: auto auto;
             gap: 2px;
         }
-        .details{
+        .details {
             display: grid;
             grid-template-columns: auto auto;
             gap: 5px;
@@ -143,7 +178,6 @@
             text-align: left;
             font-weight: bold;
             border: 1px solid #dddddd;
-
         }
         .response {
             margin: 5px 0;
@@ -161,10 +195,8 @@
             text-align: left;
             padding: 8px;
         }
-        th{
-            text-align: center;
-        }
         th {
+            text-align: center;
             color: black;
         }
         tr:nth-child(even) {
@@ -174,26 +206,25 @@
             background-color: transparent;
         }
         .print-button {
-        background-color: white;
-        color: black;
-        padding: 8px 16px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin-right: 10px;
-        transition: background-color 0.3s ease;
-    }
+            background-color: white;
+            color: black;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
+        }
 
-    button{
+        button {
             background-color: transparent;
             border: none;
         }
 
-
         .back-icon {
             left: 10px;
             font-size: 30px;
-            color:black;
+            color: black;
             text-decoration: none;
             cursor: pointer;
         }
@@ -213,35 +244,38 @@
             border-radius: 5px;
             cursor: pointer;
             margin-left: -180px;
-}
+        }
     </style>
 </head>
 <body>
-    <header>
-        <h2>E.D.G.E | P.A.R. Education Detection and Guidance for Education</h2>
-    </header>
+<header>
+    <h2>E.D.G.E | P.A.R. Education Detection and Guidance for Education</h2>
+    <div class="school-name">
+        <img src="school_image/bacayao_sur.png" alt="School Logo" class="school-logo"> <!-- Replace with the actual path to your image -->
+        Bacayao Sur Elementary School
+    </div> <!-- Centered school name with background color -->
+</header>
     <div class="update">
-    <a href="<?php echo $filename ?>?employment_number=<?php echo isset($_GET['employment_number']) ? $_GET['employment_number'] : 'default_value'; ?>"> <button class="back-icon"><i class='bx bxs-chevron-left'></i></button></a>
-    <button class="print-button" onclick="printContent()">Print Content</button>
-        <p class="label">School Year</p>
-        <input class="response" type="text" value=" ">
+        <a href="<?php echo $filename ?>?employment_number=<?php echo isset($_GET['employment_number']) ? $_GET['employment_number'] : 'default_value'; ?>"> 
+            <button class="back-icon"><i class='bx bxs-chevron-left'></i></button>
+        </a>
+        <button class="print-button" onclick="printContent()">Print Content</button>
     </div>
     <div class="details">
-    <div class="update-record">
-        <p class="label">Employee Number</p>
-        <input class="response" type="text" value="<?php echo $employment_number ?>" readonly>
-        
-        <p class="label">Adviser</p>
-        <input class="response" type="text" value="<?php echo $fullname ?>" readonly>
-    </div>
-    <div class="update-record2">
-        
-        <p class="label">Grade & Section</p>
-        <input class="response" type="text" value="<?php echo $grade .' - '. $section ?>" readonly>
-        
-        <p class="label">Total P.A.Rs</p>
-        <input class="response" type="text" value="<?php echo $count ?>" readonly>
-    </div>
+        <div class="update-record">
+            <p class="label">Employee Number</p>
+            <input class="response" type="text" value="<?php echo $employment_number ?>" readonly>
+            
+            <p class="label">Adviser</p>
+            <input class="response" type="text" value="<?php echo $fullname ?>" readonly>
+        </div>
+        <div class="update-record2">
+            <p class="label">Grade & Section</p>
+            <input class="response" type="text" value="<?php echo ucfirst($grade) . ' - ' . ucfirst($section); ?>" readonly>
+            
+            <p class="label">Total P.A.Rs</p>
+            <input class="response" type="text" value="<?php echo $count ?>" readonly>
+        </div>
     </div>
     <table>
         <thead>
@@ -254,34 +288,34 @@
         </thead>
         <tbody>
         <?php 
-if ($result_combined->num_rows > 0) {
-    while($row = $result_combined->fetch_assoc()) {
-?>
-        <tr class='sheshable'>
-            <th style='width:20%'><?php echo $row["lrn"]; ?></th>
-            <th style='width:25.7%'><?php echo $row["fullname"]; ?></th>
-            <th style='width:20%' class='act'>
-                <div class="icon-container">
-                    <?php if ($row["english"] === 'E'): ?>
-                        E
-                    <?php endif; ?>
-                    <?php if ($row["filipino"] === 'F'): ?>
-                        F
-                    <?php endif; ?>
-                    <?php if ($row["numeracy"] === 'N'): ?>
-                        N
-                    <?php endif; ?>
-                    <?php if ($row["behavioral"] === 'B'): ?>
-                        B
-                    <?php endif; ?>
-                </div>
-            </th>
-            <th style='width:20%'><?php echo $row["status"]; ?></th>
-        </tr>
-<?php
-    }
-}
-?>
+        if ($result_combined->num_rows > 0) {
+            while($row = $result_combined->fetch_assoc()) {
+        ?>
+            <tr class='sheshable'>
+                <th style='width:20%'><?php echo $row["lrn"]; ?></th>
+                <th style='width:25.7%'><?php echo $row["fullname"]; ?></th>
+                <th style='width:20%' class='act'>
+                    <div class="icon-container">
+                        <?php if ($row["english"] === 'E'): ?>
+                            E
+                        <?php endif; ?>
+                        <?php if ($row["filipino"] === 'F'): ?>
+                            F
+                        <?php endif; ?>
+                        <?php if ($row["numeracy"] === 'N'): ?>
+                            N
+                        <?php endif; ?>
+                        <?php if ($row["behavioral"] === 'B'): ?>
+                            B
+                        <?php endif; ?>
+                    </div>
+                </th>
+                <th style='width:20%'><?php echo $row["status"]; ?></th>
+            </tr>
+        <?php
+            }
+        }
+        ?>
         </tbody>
     </table>
 </body>
