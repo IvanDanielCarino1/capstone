@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jun 18, 2024 at 01:47 PM
--- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- Generation Time: Nov 02, 2024 at 05:59 AM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -143,6 +143,25 @@ CREATE TABLE `adviser` (
 
 INSERT INTO `adviser` (`id`, `fullname`, `employment_number`, `password`, `email`, `grade`, `section`, `school`, `date`, `otp`, `verified`, `activation`, `year`) VALUES
 (1, 'Ivan Daniel James Carino ', '12', '$2y$10$O8ktjubeR5eBCDYq.F449.tmiwVngaAJyb8Jd3.G9yarf5st6lWgC', 'ivandanielcarino@yahoo.com', 'kinder', 'Rizal', 'Bacayao Sur Elementary School', '2024-05-15', 0, 'yes', 'activate', '2024');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `archive`
+--
+
+CREATE TABLE `archive` (
+  `id` int(11) NOT NULL,
+  `employment_number` varchar(255) NOT NULL,
+  `fullname` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `date` varchar(255) NOT NULL,
+  `year` varchar(255) NOT NULL,
+  `activation` varchar(255) NOT NULL,
+  `position` varchar(255) NOT NULL,
+  `password` varchar(255) NOT NULL,
+  `verified` varchar(255) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -387,15 +406,16 @@ CREATE TABLE `sdo_admin` (
   `otp` int(11) DEFAULT NULL,
   `verified` varchar(255) NOT NULL,
   `activation` varchar(255) NOT NULL,
-  `year` varchar(255) NOT NULL
+  `year` varchar(255) NOT NULL,
+  `position` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `sdo_admin`
 --
 
-INSERT INTO `sdo_admin` (`id`, `fullname`, `employment_number`, `email`, `password`, `date`, `otp`, `verified`, `activation`, `year`) VALUES
-(1, 'Vivien  Grace Mendez ', '1234567', 'viviennemendez@gmail.com', '$2y$10$glfN1zzinp3pe3SZL3QTZuZrniG/R4hFBnNbbU3pc84dLfHK9mU.u', '2024-05-15', NULL, 'yes', 'activate', '2024');
+INSERT INTO `sdo_admin` (`id`, `fullname`, `employment_number`, `email`, `password`, `date`, `otp`, `verified`, `activation`, `year`, `position`) VALUES
+(2, 'Vivien  Grace Mendez ', '1234567', 'viviennemendez@gmail.com', '$2y$10$glfN1zzinp3pe3SZL3QTZuZrniG/R4hFBnNbbU3pc84dLfHK9mU.u', '2024-05-15', NULL, 'yes', 'activate', '2024', 'SDO Admin');
 
 --
 -- Indexes for dumped tables
@@ -423,6 +443,12 @@ ALTER TABLE `academic_numeracy`
 -- Indexes for table `adviser`
 --
 ALTER TABLE `adviser`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `archive`
+--
+ALTER TABLE `archive`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -512,6 +538,12 @@ ALTER TABLE `adviser`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
+-- AUTO_INCREMENT for table `archive`
+--
+ALTER TABLE `archive`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `behavioral`
 --
 ALTER TABLE `behavioral`
@@ -563,7 +595,7 @@ ALTER TABLE `school_year`
 -- AUTO_INCREMENT for table `sdo_admin`
 --
 ALTER TABLE `sdo_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
