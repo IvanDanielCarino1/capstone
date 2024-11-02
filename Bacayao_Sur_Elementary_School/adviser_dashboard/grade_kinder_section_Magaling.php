@@ -2240,6 +2240,14 @@ if ($englishresult->num_rows > 0) {
 }
 ?>
 
+
+             <tr>
+                <td colspan="5">
+                    <div class="save">
+                        <a href="update_all_records/update_literacy_english.php"><button id="save">Update All Records</button></a>
+                    </div>
+                </td>
+            </tr>
         </tbody>
 </table>
 
@@ -2280,6 +2288,13 @@ if ($englishresult->num_rows > 0) {
         }
     }    
     ?>
+            <tr>
+                <td colspan="5">
+                    <div class="save">
+                        <a href="update_all_records/update_literacy_filipino.php"><button id="save">Update All Records</button></a>
+                    </div>
+                </td>
+            </tr>
             </tbody>
 </table>
 
@@ -2320,6 +2335,13 @@ if ($englishresult->num_rows > 0) {
         }
     }
     ?>
+            <tr>
+                <td colspan="5">
+                    <div class="save">
+                        <a href="update_all_records/update_numeracy.php"><button id="save">Update All Records</button></a>
+                    </div>
+                </td>
+            </tr>
             </tbody>
 </table>
 
@@ -2360,6 +2382,13 @@ if ($englishresult->num_rows > 0) {
         }
     }
     ?>
+            <tr>
+                <td colspan="5">
+                    <div class="save">
+                        <a href="update_all_records/update_behavioral.php"><button id="save">Update All Records</button></a>
+                    </div>
+                </td>
+            </tr>
             </tbody>
 </table>
 
@@ -3106,6 +3135,9 @@ if ($result_combined->num_rows > 0) {
             </div>
         </form>
 
+        <div class="save">
+            <button id="save">Update All Records</button>
+        </div>
         <div class="pagination">
             <button id="prevbutton" onclick="prevPageReportTable()">Previous</button>
             <button id="nextbutton" onclick="nextPageReportTable()">Next</button>

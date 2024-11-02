@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 02, 2024 at 05:59 AM
+-- Generation Time: Nov 02, 2024 at 03:18 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -45,15 +45,16 @@ CREATE TABLE `academic_english` (
   `advice` varchar(255) NOT NULL,
   `school` varchar(255) NOT NULL,
   `year` varchar(255) NOT NULL,
-  `recomended` varchar(255) NOT NULL
+  `recomended` varchar(255) NOT NULL,
+  `intervened` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `academic_english`
 --
 
-INSERT INTO `academic_english` (`id`, `fullname`, `lrn`, `grade`, `section`, `date`, `classification`, `quarter`, `status`, `gname`, `number`, `notes`, `intervention`, `topic`, `advice`, `school`, `year`, `recomended`) VALUES
-(1, 'Valentina Reyes', '71625208025', 'kinder', 'rizal', '2024-06-14', 'Academic - Literacy in English', '1', 'Unresolved', 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'Bacayao Sur Elementary School', '2024', 'asda');
+INSERT INTO `academic_english` (`id`, `fullname`, `lrn`, `grade`, `section`, `date`, `classification`, `quarter`, `status`, `gname`, `number`, `notes`, `intervention`, `topic`, `advice`, `school`, `year`, `recomended`, `intervened`) VALUES
+(1, 'Ivan Daniel Carino', '567895', 'kinder', 'magaling', '2024-11-02', 'Academic - Literacy in English', '1', '', 'Virginia Bencito', 'dsd', 'asd', 'asd', 'asd', 'asd', 'Bacayao Sur Elementary School', '2024', 'aasd', '2024-11-02');
 
 -- --------------------------------------------------------
 
@@ -79,15 +80,16 @@ CREATE TABLE `academic_filipino` (
   `advice` varchar(255) NOT NULL,
   `school` varchar(255) NOT NULL,
   `year` varchar(255) NOT NULL,
-  `recomended` varchar(255) NOT NULL
+  `recomended` varchar(255) NOT NULL,
+  `intervened` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `academic_filipino`
 --
 
-INSERT INTO `academic_filipino` (`id`, `lrn`, `fullname`, `grade`, `section`, `date`, `quarter`, `classification`, `status`, `gname`, `number`, `notes`, `intervention`, `topic`, `advice`, `school`, `year`, `recomended`) VALUES
-(1, '71625208025', 'Valentina Reyes', 'kinder', 'rizal', '2024-06-14', '1', 'Academic - Literacy in Filipino', 'Resolved', 'ds', 'asd', '', '', '', '', 'Bacayao Sur Elementary School', '2024', '');
+INSERT INTO `academic_filipino` (`id`, `lrn`, `fullname`, `grade`, `section`, `date`, `quarter`, `classification`, `status`, `gname`, `number`, `notes`, `intervention`, `topic`, `advice`, `school`, `year`, `recomended`, `intervened`) VALUES
+(1, '567895', 'Ivan Daniel Carino', 'kinder', 'magaling', '2024-11-02', '1', 'Academic - Literacy in Filipino', 'Resolved', 'Virginia Bencito', '09267312535', 'asd', 'asd', 'asd', 'asd', 'Bacayao Sur Elementary School', '2024', 'asd', '2024-11-02');
 
 -- --------------------------------------------------------
 
@@ -112,8 +114,17 @@ CREATE TABLE `academic_numeracy` (
   `topic` varchar(255) NOT NULL,
   `advice` varchar(255) NOT NULL,
   `school` varchar(255) NOT NULL,
-  `year` varchar(255) NOT NULL
+  `year` varchar(255) NOT NULL,
+  `intervened` varchar(255) NOT NULL,
+  `recomended` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `academic_numeracy`
+--
+
+INSERT INTO `academic_numeracy` (`id`, `lrn`, `fullname`, `grade`, `section`, `date`, `quarter`, `classification`, `status`, `gname`, `number`, `notes`, `intervention`, `topic`, `advice`, `school`, `year`, `intervened`, `recomended`) VALUES
+(1, '567895', 'Ivan Daniel Carino', 'kinder', 'magaling', '2024-11-02', '1', 'Academic - Literacy in Numeracy', 'On-Going', 'Virginia Bencito', '09267312535', 'asd', 'asd', 'asd', 'asd', 'Bacayao Sur Elementary School', '2024', '2024-11-02', 'asd');
 
 -- --------------------------------------------------------
 
@@ -142,7 +153,7 @@ CREATE TABLE `adviser` (
 --
 
 INSERT INTO `adviser` (`id`, `fullname`, `employment_number`, `password`, `email`, `grade`, `section`, `school`, `date`, `otp`, `verified`, `activation`, `year`) VALUES
-(1, 'Ivan Daniel James Carino ', '12', '$2y$10$O8ktjubeR5eBCDYq.F449.tmiwVngaAJyb8Jd3.G9yarf5st6lWgC', 'ivandanielcarino@yahoo.com', 'kinder', 'Rizal', 'Bacayao Sur Elementary School', '2024-05-15', 0, 'yes', 'activate', '2024');
+(1, 'Karla Bano Cavs ', '676767', '$2y$10$h3/PB2TDLeLiclUKSNTXD.8AL16.R7PvB8HB0EevxUfinCf68twMW', 'zivza.carino.up@phinmaed.com', 'kinder', 'Magaling', 'Bacayao Sur Elementary School', '2024-11-02', 0, 'yes', 'activate', '2024');
 
 -- --------------------------------------------------------
 
@@ -187,15 +198,16 @@ CREATE TABLE `behavioral` (
   `advice` varchar(255) NOT NULL,
   `school` varchar(255) NOT NULL,
   `year` varchar(255) NOT NULL,
-  `recomended` varchar(255) NOT NULL
+  `recomended` varchar(255) NOT NULL,
+  `intervened` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `behavioral`
 --
 
-INSERT INTO `behavioral` (`id`, `lrn`, `fullname`, `grade`, `section`, `date`, `quarter`, `classification`, `status`, `gname`, `number`, `notes`, `intervention`, `topic`, `advice`, `school`, `year`, `recomended`) VALUES
-(2, '71625208025', 'Valentina Reyes', 'kinder', 'rizal', '2024-06-14', '1', 'Behavioral', 'Unresolved', 'asd', 'asd', 'asd', 'asd', 'asd', 'asd', 'Bacayao Sur Elementary School', '2024', 'asd');
+INSERT INTO `behavioral` (`id`, `lrn`, `fullname`, `grade`, `section`, `date`, `quarter`, `classification`, `status`, `gname`, `number`, `notes`, `intervention`, `topic`, `advice`, `school`, `year`, `recomended`, `intervened`) VALUES
+(1, '567895', 'Ivan Daniel Carino', 'kinder', 'magaling', '2024-11-02', '1', 'Behavioral', 'On-Going', 'Virginia Bencito', 'asd', 'asd', 'asd', 'asd', 'asd', 'Bacayao Sur Elementary School', '2024', 'asd', '2024-11-02');
 
 -- --------------------------------------------------------
 
@@ -217,6 +229,13 @@ CREATE TABLE `counselor` (
   `year` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Dumping data for table `counselor`
+--
+
+INSERT INTO `counselor` (`id`, `fullname`, `employment_number`, `email`, `password`, `school`, `date`, `otp`, `verified`, `activation`, `year`) VALUES
+(1, 'Sophia Michael  Mangubat ', '789056', 'ivza.carino.up@phinmaed.com', '$2y$10$Kyh/hFBufEN/uRLTUfw34u/C4xZoyH121Y7xlTlLUnh3MrZ.p96zK', 'Bacayao Sur Elementary School', '2024-11-02', NULL, 'yes', 'activate', '2024');
+
 -- --------------------------------------------------------
 
 --
@@ -234,94 +253,40 @@ CREATE TABLE `executive_committee` (
   `otp` varchar(255) NOT NULL,
   `verified` varchar(255) NOT NULL,
   `activation` varchar(255) NOT NULL,
-  `year` varchar(255) NOT NULL
+  `year` varchar(255) NOT NULL,
+  `position` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `executive_committee`
+--
+
+INSERT INTO `executive_committee` (`id`, `fullname`, `employment_number`, `email`, `password`, `school`, `date`, `otp`, `verified`, `activation`, `year`, `position`) VALUES
+(1, 'Ivan Daniel Zapata Carino ', '121212', 'ivandandsielcarino442@gmail.com', '$2y$10$rXTjtyWS.k0U48oVNonFVOr.qlSiGwf1yQAG2FD/LzMOC6kp.d6ny', '', '2024-11-02', '', 'yes', 'activate', '2024', 'Executive Committee');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `grade_kinder_section_ngi`
+-- Table structure for table `grade_kinder_section_magaling`
 --
 
-CREATE TABLE `grade_kinder_section_ngi` (
+CREATE TABLE `grade_kinder_section_magaling` (
   `id` int(11) NOT NULL,
   `lrn` varchar(255) NOT NULL,
   `fullname` varchar(255) NOT NULL,
-  `gender` varchar(255) NOT NULL,
-  `section` varchar(255) NOT NULL,
   `grade` varchar(255) NOT NULL,
+  `section` varchar(255) NOT NULL,
+  `gender` varchar(255) NOT NULL,
   `school` varchar(255) NOT NULL,
   `year` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `grade_kinder_section_ngi`
+-- Dumping data for table `grade_kinder_section_magaling`
 --
 
-INSERT INTO `grade_kinder_section_ngi` (`id`, `lrn`, `fullname`, `gender`, `section`, `grade`, `school`, `year`) VALUES
-(1, '716', 'Valentina Reyes', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(2, '334', 'Alejandro Santos', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(3, '422', 'Elena Fernandez', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(4, '729', 'Rafael Gonzales', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(5, '4149', 'Clara Rivera', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(6, '754', 'Mateo Hernandez', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(7, '5152', 'Sophia Rodriguez', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(8, '33319', 'Carlos Reyes', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(9, '35', 'Isabella Torres', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(10, '1078', 'Miguel Castro', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(11, '183992', 'Diego Lopez', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(12, '1177', 'Andrea Delgado', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(13, '32456284', 'Camille Martinez', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(14, '60043', 'Gabriel Fernandez', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(15, '6813609', 'Sofia Ramirez', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(16, '963701', 'Ricardo Garcia', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(17, '450717017', 'Liza Reyes', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(18, '771314988', 'Jose Cruz', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(19, '96225', 'Juan dela Cruz', 'Male', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(20, '1128275', 'Maria Santos', 'Female', 'ngi', 'kinder', 'Bacayao Sur Elementary School', '2024');
-
--- --------------------------------------------------------
-
---
--- Table structure for table `grade_kinder_section_rizal`
---
-
-CREATE TABLE `grade_kinder_section_rizal` (
-  `id` int(11) NOT NULL,
-  `lrn` varchar(255) NOT NULL,
-  `fullname` varchar(255) NOT NULL,
-  `gender` varchar(255) NOT NULL,
-  `section` varchar(255) NOT NULL,
-  `grade` varchar(255) NOT NULL,
-  `school` varchar(255) NOT NULL,
-  `year` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Dumping data for table `grade_kinder_section_rizal`
---
-
-INSERT INTO `grade_kinder_section_rizal` (`id`, `lrn`, `fullname`, `gender`, `section`, `grade`, `school`, `year`) VALUES
-(1, '71625208025', 'Valentina Reyes', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(2, '37591932905', 'Alejandro Santos', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(3, '42279725355', 'Elena Fernandez', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(4, '7296589590', 'Rafael Gonzales', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(5, '41491531510', 'Clara Rivera', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(6, '75457821495', 'Mateo Hernandez', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(7, '51527603847', 'Sophia Rodriguez', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(8, '33319078537', 'Carlos Reyes', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(9, '35395914791', 'Isabella Torres', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(10, '10780836962', 'Miguel Castro', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(11, '18399259265', 'Diego Lopez', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(12, '11777415099', 'Andrea Delgado', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(13, '32456284551', 'Camille Martinez', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(14, '60043085782', 'Gabriel Fernandez', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(15, '68136099299', 'Sofia Ramirez', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(16, '96370146455', 'Ricardo Garcia', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(17, '45071701709', 'Liza Reyes', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(18, '77131498883', 'Jose Cruz', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(19, '96225704125', 'Juan dela Cruz', 'Male', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024'),
-(20, '11282752844', 'Maria Santos', 'Female', 'rizal', 'kinder', 'Bacayao Sur Elementary School', '2024');
+INSERT INTO `grade_kinder_section_magaling` (`id`, `lrn`, `fullname`, `grade`, `section`, `gender`, `school`, `year`) VALUES
+(1, '567895', 'Ivan Daniel Carino', 'kinder', 'magaling', 'male', 'Bacayao Sur Elementary School', '2024');
 
 -- --------------------------------------------------------
 
@@ -348,7 +313,7 @@ CREATE TABLE `principal` (
 --
 
 INSERT INTO `principal` (`id`, `fullname`, `employment_number`, `email`, `password`, `school`, `date`, `otp`, `verified`, `activation`, `year`) VALUES
-(1, 'Sophia Elizabeth Walker ', '121222', 'edge.developers1234@gmail.com', '$2y$10$Pvl0.aTLd5uIv1JMfGbg9.GxooDWf.xfpa5wxdTnIxl.Ysb695FDG', 'Bacayao Sur Elementary School', '2024-06-18', NULL, 'yes', 'activate', '2024');
+(1, 'Jomar Grace  Mendez ', '789045', 'nagatajuri@yahoo.com.ph', '$2y$10$0jMeT//T8m.Xp/knEiom9eQRZumgR6PdwugjA/tlqLs87upp8wcCi', 'Bacayao Sur Elementary School', '2024-11-02', NULL, 'yes', 'activate', '2024');
 
 -- --------------------------------------------------------
 
@@ -367,8 +332,16 @@ CREATE TABLE `school_admin` (
   `otp` int(11) DEFAULT NULL,
   `verified` varchar(255) NOT NULL,
   `activation` varchar(255) NOT NULL,
-  `year` varchar(255) NOT NULL
+  `year` varchar(255) NOT NULL,
+  `position` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `school_admin`
+--
+
+INSERT INTO `school_admin` (`id`, `fullname`, `employment_number`, `email`, `password`, `school`, `date`, `otp`, `verified`, `activation`, `year`, `position`) VALUES
+(1, 'Vangie Bencito Bencito ', '122334', 'ivandandsielcarino442@gmail.com', '$2y$10$DAgtkJSdYERabDz0fLs79eHy5.ZPAZ6FYZpy6xYnFVJWRV14k/Hr.', 'Bacayao Sur Elementary School', '2024-11-02', NULL, 'yes', 'activate', '2024', 'School Admin');
 
 -- --------------------------------------------------------
 
@@ -387,8 +360,7 @@ CREATE TABLE `school_year` (
 --
 
 INSERT INTO `school_year` (`id`, `start`, `end`) VALUES
-(1, '2024', '2025'),
-(3, '2025', '2026');
+(1, '2024', '2025');
 
 -- --------------------------------------------------------
 
@@ -471,15 +443,9 @@ ALTER TABLE `executive_committee`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `grade_kinder_section_ngi`
+-- Indexes for table `grade_kinder_section_magaling`
 --
-ALTER TABLE `grade_kinder_section_ngi`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indexes for table `grade_kinder_section_rizal`
---
-ALTER TABLE `grade_kinder_section_rizal`
+ALTER TABLE `grade_kinder_section_magaling`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -529,7 +495,7 @@ ALTER TABLE `academic_filipino`
 -- AUTO_INCREMENT for table `academic_numeracy`
 --
 ALTER TABLE `academic_numeracy`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `adviser`
@@ -541,37 +507,31 @@ ALTER TABLE `adviser`
 -- AUTO_INCREMENT for table `archive`
 --
 ALTER TABLE `archive`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `behavioral`
 --
 ALTER TABLE `behavioral`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `counselor`
 --
 ALTER TABLE `counselor`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `executive_committee`
 --
 ALTER TABLE `executive_committee`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `grade_kinder_section_ngi`
+-- AUTO_INCREMENT for table `grade_kinder_section_magaling`
 --
-ALTER TABLE `grade_kinder_section_ngi`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
-
---
--- AUTO_INCREMENT for table `grade_kinder_section_rizal`
---
-ALTER TABLE `grade_kinder_section_rizal`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+ALTER TABLE `grade_kinder_section_magaling`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `principal`
@@ -583,7 +543,7 @@ ALTER TABLE `principal`
 -- AUTO_INCREMENT for table `school_admin`
 --
 ALTER TABLE `school_admin`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `school_year`

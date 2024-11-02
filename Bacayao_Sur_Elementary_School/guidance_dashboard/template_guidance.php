@@ -44,6 +44,25 @@ if (isset($_GET['employment_number'])) {
 ?>
 <?php
     include('../../database.php');
+    $query = "SELECT start, end FROM school_year ORDER BY start DESC";
+    $result = mysqli_query($conn, $query);
+
+    // Array to store all school year options
+    $school_years = array();
+
+    if ($result && mysqli_num_rows($result) > 0) {
+        while ($row = mysqli_fetch_assoc($result)) {
+            $start_year = $row['start'];
+            $end_year = $row['end'];
+            $school_years[$start_year] = $start_year . ' - ' . $end_year;
+        }
+    }
+
+    // Close database conn
+    mysqli_close($conn);
+?>
+<?php
+    include('../../database.php');
     $tables = ['behavioral'];
     $count = 0;
     $lrnCounted = array(); // Array to keep track of LRNs already counted
@@ -68,21 +87,53 @@ if (isset($_GET['employment_number'])) {
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if the submit1 button was clicked
     if (isset($_POST['submit1'])) {
-        // Redirect to haha.php
-        header("Location: haha.php");
+        // Retrieve the values from the POST data
+        $lrn = isset($_POST['lrn']) ? $_POST['lrn'] : '';
+        $fullname = isset($_POST['fullname']) ? $_POST['fullname'] : '';
+        $grade = isset($_POST['grade']) ? $_POST['grade'] : '';
+        $section = isset($_POST['section']) ? $_POST['section'] : '';
+        
+        // Retrieve the selected quarter, default to '1' if not set
+        $quarter = isset($_POST['quarter']) && !empty($_POST['quarter']) ? $_POST['quarter'] : '1';
+        
+        // Retrieve the selected school year, default to '2024' if not set
+        $school_year = isset($_POST['school-year']) && !empty($_POST['school-year']) ? $_POST['school-year'] : '2024';
+
+        // Redirect to guidance_intervention.php with additional parameters
+        header("Location: guidance_intervention.php?lrn=$lrn&fullname=$fullname&grade=$grade&section=$section&quarter=$quarter&school_year=$school_year");
+        exit();
+    }
+}
+?>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Check if the submit1 button was clicked
+    if (isset($_POST['submit1'])) {
+        // Retrieve the values from the POST data
+        $lrn = isset($_POST['lrn']) ? $_POST['lrn'] : '';
+        $fullname = isset($_POST['fullname']) ? $_POST['fullname'] : '';
+        $grade = isset($_POST['grade']) ? $_POST['grade'] : '';
+        $section = isset($_POST['section']) ? $_POST['section'] : '';
+        
+        // Retrieve the selected quarter, default to '1' if not set
+        $quarter = isset($_POST['quarter']) && !empty($_POST['quarter']) ? $_POST['quarter'] : '1';
+        
+        // Retrieve the selected school year, default to '2024' if not set
+        $school_year = isset($_POST['school-year']) && !empty($_POST['school-year']) ? $_POST['school-year'] : '2024';
+
+        // Redirect to guidance_intervention.php with additional parameters
+        header("Location: guidance_intervention.php?lrn=$lrn&fullname=$fullname&grade=$grade&section=$section&quarter=$quarter&school_year=$school_year");
         exit();
     }
 }
 ?>
 
+
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<script>
-        function preventBack(){window.history.forward()};
-        setTimeout("preventBack()",0);
-        window.onunload=function(){null;}
-    </script>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
@@ -1323,12 +1374,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     </div>   
     <div class="main-container">
         <div class="row">
-            <div class="column">
-                <div class="select-wrapper">
-                    <select id="topdown1" name="school-year" class="containers first">
-                        <option value="school-year">S.Y. 2023 - 2024</option>
-                    </select>
-                </div>
+                <div class="column">
+                <form id="school_year_form" method="post" action="">
+                        <select id="topdown1" name="school-year" class="containers first">
+                            <?php foreach ($school_years as $start_year => $school_year) : ?>
+                                <?php $selected = (isset($_POST['school-year']) && $_POST['school-year'] == $start_year) || date('Y') == $start_year ? 'selected="selected"' : ''; ?>
+                                <option value="<?php echo $start_year; ?>" <?php echo $selected; ?>><?php echo $school_year; ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </form>
         </div>
         <div class="column">
             <form method="post">
@@ -1481,30 +1535,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
 
         <table border="0" id="identification-behavioral">
-    <?php
-    if ($behavioalresult->num_rows > 0) {
-        // Output data of each row
-        while ($row = $behavioalresult->fetch_assoc()) {
-            echo "<tr class='sheshable'>";
-            echo "<th style='width:18%'>" . htmlspecialchars($row["lrn"]) . "</th>";
-            echo "<th style='width:27%'>" . htmlspecialchars($row["fullname"]) . "</th>";
-            echo "<th style='width:19%'>" . ucfirst(htmlspecialchars($row["grade"])) . " - " . ucfirst(htmlspecialchars($row["section"])) . "</th>";
-            echo "<th style='width:20%'>" . htmlspecialchars($row["status"]) . "</th>";
-            echo "<th style='width:25%' class='act'>";
-            
-            // Start the form for each row
-            echo "<form method='post' action='haha.php' style='display:inline;'>";
-            // Add hidden input to store the unique identifier for the record, if necessary
-            echo "<input type='hidden' name='lrn' value='" . htmlspecialchars($row["lrn"]) . "'>";
-            echo "<button type='submit' name='submit1' style='background-color:#170C59; width: 260px; padding: 3px; margin: 8px;' class='updateRecordButtons'>UPDATE RECORD</button>";
-
-            echo "</form>"; // End the form
-            
-            echo "</th>";
-            echo "</tr>";
-        }
+        <?php
+if ($behavioalresult->num_rows > 0) {
+    // Output data of each row
+    while ($row = $behavioalresult->fetch_assoc()) {
+        echo "<tr class='sheshable'>";
+        echo "<td style='width:18%'>" . htmlspecialchars($row["lrn"]) . "</td>";
+        echo "<td style='width:27%'>" . htmlspecialchars($row["fullname"]) . "</td>";
+        echo "<td style='width:19%'>" . ucfirst(htmlspecialchars($row["grade"])) . " - " . ucfirst(htmlspecialchars($row["section"])) . "</td>";
+        echo "<td style='width:20%'>" . htmlspecialchars($row["status"]) . "</td>";
+        echo "<td style='width:25%' class='act'>";
+        
+        // Start the form for each row
+        echo "<form method='post' action='' style='display:inline;'>";
+        // Add hidden input to store the unique identifier for the record
+        echo "<input type='hidden' name='lrn' value='" . htmlspecialchars($row["lrn"]) . "'>";
+        echo "<input type='hidden' name='fullname' value='" . htmlspecialchars($row["fullname"]) . "'>";
+        echo "<input type='hidden' name='grade' value='" . htmlspecialchars($row["grade"]) . "'>";
+        echo "<input type='hidden' name='section' value='" . htmlspecialchars($row["section"]) . "'>";
+        echo "<button type='submit' name='submit1' style='background-color:#170C59; width: 260px; padding: 3px; margin: 8px;' class='updateRecordButtons'>UPDATE RECORD</button>";
+        echo "</form>"; // End the form
+        
+        echo "</td>";
+        echo "</tr>";
     }
-    ?>
+}
+?>
+<?php
+if ($behavioalresult->num_rows > 0) {
+    // Output data of each row
+    while ($row = $behavioalresult->fetch_assoc()) {
+        echo "<tr class='sheshable'>";
+        echo "<td style='width:18%'>" . htmlspecialchars($row["lrn"]) . "</td>";
+        echo "<td style='width:27%'>" . htmlspecialchars($row["fullname"]) . "</td>";
+        echo "<td style='width:19%'>" . ucfirst(htmlspecialchars($row["grade"])) . " - " . ucfirst(htmlspecialchars($row["section"])) . "</td>";
+        echo "<td style='width:20%'>" . htmlspecialchars($row["status"]) . "</td>";
+        echo "<td style='width:25%' class='act'>";
+        
+        // Start the form for each row
+        echo "<form method='post' action='' style='display:inline;'>";
+        // Add hidden input to store the unique identifier for the record
+        echo "<input type='hidden' name='lrn' value='" . htmlspecialchars($row["lrn"]) . "'>";
+        echo "<input type='hidden' name='fullname' value='" . htmlspecialchars($row["fullname"]) . "'>";
+        echo "<input type='hidden' name='grade' value='" . htmlspecialchars($row["grade"]) . "'>";
+        echo "<input type='hidden' name='section' value='" . htmlspecialchars($row["section"]) . "'>";
+        echo "<button type='submit' name='submit1' style='background-color:#170C59; width: 260px; padding: 3px; margin: 8px;' class='updateRecordButtons'>UPDATE RECORD</button>";
+        echo "</form>"; // End the form
+        
+        echo "</td>";
+        echo "</tr>";
+    }
+}
+?>
+
 </table>
 
 
