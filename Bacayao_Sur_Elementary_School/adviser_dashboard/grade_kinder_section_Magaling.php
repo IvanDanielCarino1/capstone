@@ -645,6 +645,7 @@ if (isset($_POST['print'])) {
         exit();
     }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -671,7 +672,6 @@ if (isset($_POST['print'])) {
             background-size: cover;
             overflow-y: hidden;
         }
-
         .logo {
             width: 100px;
             height: 100px;
@@ -2197,6 +2197,7 @@ if ($lrnresult->num_rows > 0) {
 ?>
 
     </tbody>
+    
 </table>
 
 
@@ -2244,7 +2245,9 @@ if ($englishresult->num_rows > 0) {
              <tr>
                 <td colspan="5">
                     <div class="save">
-                        <a href="update_all_records/update_literacy_english.php"><button id="save">Update All Records</button></a>
+                    <form method = "post">
+                        <a href="update_all_records/update_literacy_filipino.php"><button id="save">Update All Records</button></a>
+</form>
                     </div>
                 </td>
             </tr>
@@ -2291,7 +2294,9 @@ if ($englishresult->num_rows > 0) {
             <tr>
                 <td colspan="5">
                     <div class="save">
+                        <form method = "post">
                         <a href="update_all_records/update_literacy_filipino.php"><button id="save">Update All Records</button></a>
+</form>
                     </div>
                 </td>
             </tr>
@@ -2338,7 +2343,9 @@ if ($englishresult->num_rows > 0) {
             <tr>
                 <td colspan="5">
                     <div class="save">
-                        <a href="update_all_records/update_numeracy.php"><button id="save">Update All Records</button></a>
+                    <form method = "post">
+                        <a href="update_all_records/update_literacy_filipino.php"><button id="save">Update All Records</button></a>
+</form>
                     </div>
                 </td>
             </tr>
@@ -2385,7 +2392,9 @@ if ($englishresult->num_rows > 0) {
             <tr>
                 <td colspan="5">
                     <div class="save">
-                        <a href="update_all_records/update_behavioral.php"><button id="save">Update All Records</button></a>
+                    <form method = "post">
+                        <a href="update_all_records/update_literacy_filipino.php"><button id="save">Update All Records</button></a>
+</form>
                     </div>
                 </td>
             </tr>
@@ -2528,11 +2537,7 @@ if ($result_combined->num_rows > 0) {
 ?>
 </tbody>
 
-
-
-
 </table>
-
 
 </form>
  <!-------------------------------------------------- END --------------------------------------------------------------------------------------------------->
@@ -3134,10 +3139,6 @@ if ($result_combined->num_rows > 0) {
                 
             </div>
         </form>
-
-        <div class="save">
-            <button id="save">Update All Records</button>
-        </div>
         <div class="pagination">
             <button id="prevbutton" onclick="prevPageReportTable()">Previous</button>
             <button id="nextbutton" onclick="nextPageReportTable()">Next</button>

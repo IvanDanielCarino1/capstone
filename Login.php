@@ -1,5 +1,5 @@
 <?php
-include('../database.php');
+include('database.php');
 $errorMsg = "";
 
 function sanitizeInput($data) {
@@ -33,7 +33,7 @@ if (isset($_POST['submit'])) {
                                 $grade = $row['grade'];
                                 $section = $row['section'];
                                 $school = str_replace(' ', '_', $row['school']);
-                                header("Location: ../$school/adviser_dashboard/grade_$grade" . "_section_$section" . ".php?employment_number=$employment_number");
+                                header("Location: $school/adviser_dashboard/grade_$grade" . "_section_$section" . ".php?employment_number=$employment_number");
                                 exit();
                             } else {
                                 header("Location: enter_email_logging_in.php?employment_number=$employment_number&table=$table");
@@ -44,7 +44,7 @@ if (isset($_POST['submit'])) {
                         case 'principal':
                             if ($verifiedStatus == 'yes') {
                                 $school = str_replace(' ', '_', $row['school']);
-                                header("Location: ../$school/monitoring_tracking/Principal_tracking_reports_Q1.php?employment_number=$employment_number");
+                                header("Location:$school/monitoring_tracking/Principal_tracking_reports_Q1.php?employment_number=$employment_number");
                                 exit();
                             } else {
                                 header("Location: enter_email_logging_in.php?employment_number=$employment_number&table=$table");
@@ -55,7 +55,7 @@ if (isset($_POST['submit'])) {
                         case 'counselor':
                             if ($verifiedStatus == 'yes') {
                                 $school = str_replace(' ', '_', $row['school']);
-                                header("Location: ../$school/guidance_dashboard/template_guidance.php?employment_number=$employment_number");
+                                header("Location: $school/guidance_dashboard/template_guidance.php?employment_number=$employment_number");
                                 exit();
                             } else {
                                 header("Location: enter_email_logging_in.php?employment_number=$employment_number&table=$table");
@@ -66,7 +66,7 @@ if (isset($_POST['submit'])) {
                         case 'school_admin':
                             if ($verifiedStatus == 'yes') {
                                 $school = str_replace(' ', '_', $row['school']);
-                                header("Location: ../$school/schooladmin_manage_account/schadmin_manage_accounts.php?employment_number=$employment_number");
+                                header("Location: $school/schooladmin_manage_account/schadmin_manage_accounts.php?employment_number=$employment_number");
                                 exit();
                             } else {
                                 header("Location: enter_email_logging_in.php?employment_number=$employment_number&table=$table");
@@ -76,7 +76,7 @@ if (isset($_POST['submit'])) {
 
                         case 'sdo_admin':
                             if ($verifiedStatus == 'yes') {
-                                header("Location: ../SDO_manage_account/SDO_manage_accounts.php?employment_number=$employment_number");
+                                header("Location: SDO_manage_account/SDO_manage_accounts.php?employment_number=$employment_number");
                                 exit();
                             } else {
                                 header("Location: enter_email_logging_in.php?employment_number=$employment_number&table=$table");
@@ -136,7 +136,7 @@ if (isset($_POST['submit'])) {
             justify-content: center;
             align-items: center;
             height: 100vh;
-            background: url(../img/bg.png);
+            background: url(img/bg.png);
             background-size: cover;
         }
 
@@ -153,7 +153,7 @@ if (isset($_POST['submit'])) {
             width: 75px;
             height: 75px;
             margin: 0 auto 20px;
-            background-image: url('../img/logo.png');
+            background-image: url('/logo.png');
             background-size: cover;   
         }
 
@@ -326,7 +326,7 @@ if (isset($_POST['submit'])) {
 <body>
 
 <header>
-    <img src="../img/logo.png" class="logs">
+    <img src="img/logo.png" class="logs">
     <div class="container">
         <h4>E.D.G.E | P.A.R. Early Detection and Guidance for Education</h4>
     </div>
