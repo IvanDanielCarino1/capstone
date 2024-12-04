@@ -338,6 +338,64 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Close database conn
     mysqli_close($conn);
 ?>
+<?php
+include('../database.php');
+if (isset($_FILES['fileUpload'])) {
+    // Check if the file was uploaded successfully
+    if ($_FILES['fileUpload']['error'] === UPLOAD_ERR_OK) {
+        // Get file details
+        $fileTmpPath = $_FILES['fileUpload']['tmp_name'];
+        $fileName = $_FILES['fileUpload']['name'];
+        $fileSize = $_FILES['fileUpload']['size'];
+        $fileType = $_FILES['fileUpload']['type'];
+        $fileExtension = strtolower(pathinfo($fileName, PATHINFO_EXTENSION));
+        
+        // Check if the file is a CSV
+        if ($fileExtension === 'csv') {
+            // Open the CSV file
+            if (($handle = fopen($fileTmpPath, 'r')) !== FALSE) {
+                // Optionally skip the first row if it's a header
+                // fgetcsv($handle); // Uncomment this line if you want to skip the header row
+
+                // Read and process CSV rows
+                while (($data = fgetcsv($handle, 1000, ',')) !== FALSE) {
+                    // Assuming CSV columns: fullname, employment_number, email, password, date, otp, verified, activation, year, position
+                    $fullname = mysqli_real_escape_string($conn, $data[0]);  // Full Name
+                    $employment_number = mysqli_real_escape_string($conn, $data[1]);  // Employment Number
+                    $email = mysqli_real_escape_string($conn, $data[2]);  // Email
+                    $password = mysqli_real_escape_string($conn, $data[3]);  // Password
+                    $date = mysqli_real_escape_string($conn, $data[4]);  // Date (e.g., 'YYYY-MM-DD')
+                    $otp = mysqli_real_escape_string($conn, $data[5]);  // OTP
+                    $verified = $data[6] == '1' ? 1 : 0;  // Verified (1 or 0)
+                    $activation = $data[7] == '1' ? 1 : 0;  // Activation (1 or 0)
+                    $year = mysqli_real_escape_string($conn, $data[8]);  // Year (e.g., 2024)
+                    $position = mysqli_real_escape_string($conn, $data[9]);  // Position
+
+                    // Prepare the SQL insert statement
+                    $sql = "INSERT INTO sdo_admin (fullname, employment_number, email, password, date, otp, verified, activation, year, position) 
+                            VALUES ('$fullname', '$employment_number', '$email', '$password', '$date', '$otp', $verified, $activation, $year, '$position')";
+
+                    // Execute the query and handle errors
+                    if (mysqli_query($conn, $sql)) {
+                        echo "Record inserted successfully for: $fullname<br>";
+                    } else {
+                        echo "Error inserting record: " . mysqli_error($conn) . "<br>";
+                    }
+                }
+
+                fclose($handle);
+            } else {
+                echo "Error opening the file.";
+            }
+        } else {
+            echo "Please upload a valid CSV file.";
+        }
+    } else {
+        echo "No file uploaded or there was an error uploading the file.";
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -1326,8 +1384,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <li><a href="archive.php?employment_number=<?php echo isset($_GET['employment_number']) ? $_GET['employment_number'] : 'default_value'; ?>">Archives</a></li>
         
         <li><a href="#" onclick="downloadData()">Save Data</a></li>
+        
+        <li><a href="#" onclick="triggerFileUpload()">Upload Data</a></li>
     </ul>
 </div>
+
+<!-- Hidden file input for CSV upload -->
+<input type="file" id="fileUpload" name="fileUpload" accept=".csv" style="display: none;" onchange="uploadCSV()">
+
 
 
             </div>
@@ -1694,6 +1758,41 @@ function downloadData() {
     window.location.href = 'download.php';
 }
 </script>
+<script>
+    // Function to trigger file input when "Upload Data" is clicked
+function triggerFileUpload() {
+    document.getElementById('fileUpload').click();
+}
 
+// Function to handle the CSV file upload
+function uploadCSV() {
+    var fileInput = document.getElementById('fileUpload');
+    var file = fileInput.files[0];  // Get the selected file
+    
+    if (file && file.type === 'text/csv') {
+        // Form a FormData object to send the file to the server via AJAX
+        var formData = new FormData();
+        formData.append('fileUpload', file);
+
+        // Make an AJAX request to upload the CSV file
+        var xhr = new XMLHttpRequest();
+        xhr.open('POST', '../database.php', true);
+        
+        xhr.onload = function () {
+            if (xhr.status === 200) {
+                alert('File uploaded successfully.');
+            } else {
+                alert('Error uploading file.');
+            }
+        };
+        
+        // Send the file to the server
+        xhr.send(formData);
+    } else {
+        alert('Please select a valid CSV file.');
+    }
+}
+
+</script>
 </body>
 </html>

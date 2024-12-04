@@ -17,40 +17,66 @@
         // Get the current date
         $intervened = date('Y-m-d');
 
-        // Update query
-        $sql = "UPDATE academic_english SET 
-                    gname = ?, 
-                    number = ?, 
-                    status = ?, 
-                    notes = ?, 
-                    topic = ?, 
-                    intervention = ?, 
-                    advice = ?, 
-                    recomended = ?, 
-                    intervened = ?  -- Assuming there's a column named 'updated_at' for storing date
-                WHERE lrn =? AND quarter = $quarter";
+        // First, check if there's any existing value in the intervened columns
+        $sql_check = "SELECT intervened, intervened2, intervened3, intervened4 FROM academic_english WHERE lrn = ? AND quarter = ?";
+        $stmt_check = $conn->prepare($sql_check);
+        if ($stmt_check === false) {
+            die("Error preparing statement: " . $conn->error);
+        }
+        $stmt_check->bind_param("si", $lrn, $quarter);
+        $stmt_check->execute();
+        $stmt_check->bind_result($intervened_existing, $intervened2_existing, $intervened3_existing, $intervened4_existing);
+        $stmt_check->fetch();
+        $stmt_check->close();
 
-        // Prepare statement
-        $stmt = $conn->prepare($sql);
-        if ($stmt === false) {
+        // Determine which 'intervened' column to update
+        if (empty($intervened_existing)) {
+            $column_to_update = 'intervened';
+        } elseif (empty($intervened2_existing)) {
+            $column_to_update = 'intervened2';
+        } elseif (empty($intervened3_existing)) {
+            $column_to_update = 'intervened3';
+        } elseif (empty($intervened4_existing)) {
+            $column_to_update = 'intervened4';
+        } else {
+            die("All intervened columns are already filled.");
+        }
+
+        // Update query
+        $sql_update = "UPDATE academic_english SET 
+                        gname = ?, 
+                        number = ?, 
+                        status = ?, 
+                        notes = ?, 
+                        topic = ?, 
+                        intervention = ?, 
+                        advice = ?, 
+                        recomended = ?, 
+                        $column_to_update = ? 
+                    WHERE lrn = ? AND quarter = ?";
+
+        // Prepare the update statement
+        $stmt_update = $conn->prepare($sql_update);
+        if ($stmt_update === false) {
             die("Error preparing statement: " . $conn->error);
         }
 
-        // Bind parameters (added $current_date as the 9th parameter)
-        $stmt->bind_param("ssssssssss", $gname, $number, $status, $notes, $topic, $intervention, $advice, $recomended, $intervened, $lrn);
+        // Bind parameters (add the column to update as a parameter)
+        $stmt_update->bind_param("ssssssssssi", $gname, $number, $status, $notes, $topic, $intervention, $advice, $recomended, $intervened, $lrn, $quarter);
 
-        // Execute the statement
-        if ($stmt->execute() === false) {
-            die("Error executing statement: " . $stmt->error);
+        // Execute the update statement
+        if ($stmt_update->execute() === false) {
+            die("Error executing statement: " . $stmt_update->error);
         } 
 
         // Close statement
-        $stmt->close();
+        $stmt_update->close();
     }
 
     // Close connection
     $conn->close();
 ?>
+
 
 <?php
 include('../../../database.php');
@@ -80,6 +106,9 @@ if ($lrn) {
         $notes = $row['notes'];
         $recomended = $row['recomended'];
         $intervened = $row['intervened'];
+        $intervened2 = $row['intervened2'];
+        $intervened3 = $row['intervened3'];
+        $intervened4 = $row['intervened4'];
     }
 } 
 $conn->close();
@@ -1414,25 +1443,79 @@ $conn->close();
         <th>Recommended to</th>
     </tr>
     <tr id="row2" class="table_body">
-        <td>
-            <textarea name="notes" placeholder="Enter Notes"><?php echo isset($notes) ? $notes : ''; ?></textarea>
-            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
-        </td>
+    <td>
+    <textarea name="notes" placeholder="Enter Notes"><?php echo isset($notes) ? $notes : ''; ?></textarea>
+
+    <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 0px;">Third Intervention: <?php echo $intervened3; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened)): ?>
+        <span class="dates" style="margin-bottom: 20px;">Second Intervention: <?php echo $intervened; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 40px;">First Intervention: <?php echo $intervened2; ?></span>
+    <?php endif; ?>
+</td>
+
+
+
         <td>
             <textarea name="topic" placeholder="Enter Topic/Matter"><?php echo isset($topic) ? $topic : ''; ?></textarea>
-            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+            <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 0px;">Third Intervention: <?php echo $intervened3; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened)): ?>
+        <span class="dates" style="margin-bottom: 20px;">Second Intervention: <?php echo $intervened; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 40px;">First Intervention: <?php echo $intervened2; ?></span>
+    <?php endif; ?>
         </td>
         <td>
             <textarea name="intervention" placeholder="Enter Intervention"><?php echo isset($intervention) ? $intervention : ''; ?></textarea>
-            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+            <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 0px;">Third Intervention: <?php echo $intervened3; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened)): ?>
+        <span class="dates" style="margin-bottom: 20px;">Second Intervention: <?php echo $intervened; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 40px;">First Intervention: <?php echo $intervened2; ?></span>
+    <?php endif; ?>
         </td>
         <td>
             <textarea name="advice" placeholder="Enter Advice"><?php echo isset($advice) ? $advice : ''; ?></textarea>
-            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+            <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 0px;">Third Intervention: <?php echo $intervened3; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened)): ?>
+        <span class="dates" style="margin-bottom: 20px;">Second Intervention: <?php echo $intervened; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 40px;">First Intervention: <?php echo $intervened2; ?></span>
+    <?php endif; ?>
         </td>
         <td>
             <textarea name="recomended" placeholder="Enter Recommended to"><?php echo isset($recomended) ? $recomended : ''; ?></textarea>
-            <span class="dates">Date of Intervention: <?php echo isset($intervened) ? $intervened : ''; ?></span>
+            <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 0px;">Third Intervention: <?php echo $intervened3; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened)): ?>
+        <span class="dates" style="margin-bottom: 20px;">Second Intervention: <?php echo $intervened; ?></span>
+    <?php endif; ?>
+
+    <?php if (!empty($intervened2)): ?>
+        <span class="dates" style="margin-bottom: 40px;">First Intervention: <?php echo $intervened2; ?></span>
+    <?php endif; ?>
         </td>
     </tr>
 </table>
